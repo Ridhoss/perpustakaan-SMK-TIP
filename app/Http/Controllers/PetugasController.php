@@ -178,23 +178,23 @@ class PetugasController extends Controller
     {
 
         if ($request->has('cari')) {
-            $datapeminjaman = pinjam::select('pinjams.kode', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.name AS petugas', 'detailpinjams.qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id','pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.name AS petugas', 'detailpinjams.qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('pinjams.kode', 'judul', 'anggota','nisn', 'tgl_pinjam', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
+                ->groupBy('id','pinjams.kode', 'judul', 'isbn', 'anggota', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
                 ->where('pinjams.kode', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.name', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('bukus.judul', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapeminjaman = pinjam::select('pinjams.kode', 'bukus.judul', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.name AS petugas', 'detailpinjams.qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id','pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.name AS petugas', 'detailpinjams.qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('pinjams.kode', 'judul', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status');
+                ->groupBy('id','pinjams.kode', 'judul', 'isbn', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status');
         }
 
 
@@ -210,18 +210,20 @@ class PetugasController extends Controller
     {
 
         if ($request->has('cari')) {
-            $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.id AS idbuku', 'bukus.stok', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
+            $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
                 ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
                 ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
-                ->join('bukus', 'bukus.id', '=', 'pinjams.id_buku')
+                ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->groupBy('pengembalians.id', 'isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas', 'kembaliwajib')
                 ->where('pengembalians.kode', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.id AS idbuku', 'bukus.stok', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
-                ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
-                ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
-                ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-                ->join('bukus', 'bukus.id', '=', 'pinjams.id_buku');
+            $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
+            ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
+            ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
+            ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
+            ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+            ->groupBy('pengembalians.id', 'isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas', 'kembaliwajib');
         }
 
 

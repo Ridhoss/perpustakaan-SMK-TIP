@@ -1191,30 +1191,30 @@ class AdminController extends Controller
             'keterangan' => 'required'
         ]);
 
-
         if ($validator->fails()) {
             return redirect('/peminjaman')
                 ->withErrors($validator);
         }
-
+        
+        
         $tglkembali = Carbon::parse($request->tgl_kembali);
         $tglhariini = Carbon::parse(date('Y-m-d'));
-
+        
         $denda_hilang = 100000;
         $denda_telat = 5000;
-
+        
         if ($tglhariini->isAfter($tglkembali)) {
             $jarak = $tglkembali->diff($tglhariini);
             $jarakhari = $jarak->d;
         } else {
             $jarakhari = 0;
         }
-
+        
         $qty = $request->qtypinjam - $request->qtykembali;
-
+        
         $dendahilang = $qty * $denda_hilang;
         $dendatelat = $denda_telat * $jarakhari;
-
+        
         $denda = $dendahilang + $dendatelat;
 
         pengembalian::create([
@@ -1231,15 +1231,16 @@ class AdminController extends Controller
             ->first();
 
         $datadetail = buku::select('*')
-            ->where('id', '=', $request->idbuku)
-            ->first();
+            ->where('isbn', '=', $request->isbn)
+            ->where('status','=','0')
+            ->take($request->qtykembali);
 
         $data->update([
             'status' => 'dikembalikan'
         ]);
 
         $datadetail->update([
-            'stok' => $request->stokbuku + $request->qtykembali
+            'status' => '1'
         ]);
 
 
@@ -1287,11 +1288,12 @@ class AdminController extends Controller
             ->first();
 
         $datadetail = buku::select('*')
-            ->where('id', '=', $request->idbuku)
-            ->first();
+            ->where('isbn', '=', $request->isbn)
+            ->where('status','=','1')
+            ->take($request->qtykembali);
 
         $datadetail->update([
-            'stok' => $request->stokbuku - $request->qtykembali
+            'status' => '0'
         ]);
 
         $data->delete();
