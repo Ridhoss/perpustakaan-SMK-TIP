@@ -1,0 +1,304 @@
+:root {
+  /* color */
+
+  --primary: #002939;
+  --secondary: #ddc190;
+
+  /* font */
+
+  --mainfont: "Open Sans", sans-serif;
+  --headingfont: "Merriweather", serif;
+}
+
+* {
+  box-sizing: border-box !important;
+  text-decoration: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--mainfont);
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.heading {
+  font-family: var(--headingfont);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.subheading {
+  font-weight: 300;
+}
+
+.section-margin {
+  margin-top: 100px;
+}
+
+/* navbar */
+
+.navbar-brand {
+  font-family: var(--headingfont);
+  font-weight: 900;
+}
+
+.navbar {
+  background-color: var(--primary) !important;
+}
+
+.navbar-brand span {
+  color: var(--secondary);
+}
+
+.nav-link {
+  font-family: var(--headingfont);
+}
+
+.nav-link.active {
+  font-weight: 700;
+  color: var(--secondary) !important;
+}
+
+.icons-home i {
+  font-size: 1.8rem;
+  color: var(--secondary);
+}
+
+.icons-home i:hover{
+  color: #ffffff;
+  transition: 0.1s;
+}
+
+/* home */
+
+.home {
+  background-color: var(--primary);
+  height: 550px;
+  padding-top: 10rem;
+}
+
+.home .heading {
+  color: var(--secondary);
+}
+
+.service{
+  padding-top: 8rem;
+}
+
+.detail h3{
+  font-size: 1.4rem;
+}
+
+.detail p{
+  font-size: 0.8rem;
+}
+
+/* .btn-home .btn-buy{
+    background-color: var(--secondary);
+} */
+
+.btn-home .btn-learn {
+  background-color: var(--secondary);
+  font-family: var(--headingfont);
+  font-weight: 700;
+}
+
+/* service */
+
+.card-service {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.card-service a {
+  border: 2px solid var(--secondary);
+  color: var(--secondary);
+  font-family: var(--headingfont);
+  font-weight: 700;
+}
+
+.card-service .btn-service:hover {
+  background-color: var(--secondary);
+}
+
+.quote {
+  color: var(--secondary);
+}
+
+.banner1 {
+  height: 350px;
+}
+
+.banner1 .container {
+  background-color: var(--primary);
+}
+
+.banner1 .btn-banner1 {
+  background-color: var(--secondary);
+}
+
+/* product */
+
+#product {
+  padding-top: 8rem;
+}
+
+.product .populer h3 {
+  font-size: 25px;
+}
+
+.populer i {
+  font-size: 2.5rem;
+  color: var(--secondary);
+  padding: 0.2rem;
+}
+
+.product-populer .card-product {
+  width: 280px;
+}
+
+.product-populer .img-box {
+  border: 2px solid var(--primary);
+}
+
+.detail-product .label {
+  background-color: var(--primary);
+  padding: 10px;
+  color: #fff;
+}
+
+.detail-product a {
+  border: 2px solid var(--secondary);
+  color: var(--secondary);
+  font-size: 1.8rem;
+}
+
+.detail-product a:hover {
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+
+/* .img-fluid {
+  width: 180px;
+} */
+
+.new-product .img-box{
+  /* background-color: var(--primary); */
+  border-bottom: 1px solid #002939;
+}
+
+.new-product .card-title{
+  font-family: var(--headingfont);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.price-wrapper i {
+  font-size: 1.5rem;
+}
+
+.price {
+  font-size: 1.3rem;
+}
+
+.fa-star {
+  font-size: 1rem;
+}
+
+.price-wrapper a{
+  border: 2px solid var(--secondary);
+  color: var(--secondary);
+}
+
+.price-wrapper a:hover{
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+
+.btn-load a{
+  background-color: var(--secondary);
+  color: #fff;
+}
+
+.footer{
+  height: 80px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  font-weight: bold;
+}
+
+.img-book {
+  width: 200px;
+}
+
+@media screen and (min-width: 768px) {
+  .home {
+    padding-top: 14rem;
+  }
+
+  .home .heading {
+    font-size: 36px;
+  }
+
+  .banner1 img {
+    width: 60%;
+  }
+
+  .populer i {
+    font-size: 2.9rem;
+  }
+}
+
+/* desktop */
+
+@media screen and (min-width: 992px) {
+  .section-margin {
+    margin-top: 200px;
+  }
+
+  .home .content-left {
+    padding-bottom: 40px;
+  }
+
+  .home .heading {
+    font-size: 46px;
+  }
+
+  .home .subheading {
+    font-size: 20px;
+  }
+
+  .home img {
+    right: 0;
+    bottom: -20%;
+  }
+
+  #ro,
+  #con {
+    height: 100%;
+  }
+
+  .banner1 {
+    height: 200px;
+  }
+
+  .banner1 .container {
+    padding: 0 4rem;
+  }
+
+  .banner1 img {
+    width: 70%;
+  }
+
+  .product-populer .card-product {
+    width: 260px;
+  }
+
+  .img-book {
+    width: 180px;
+  }
+}

@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+
+:root {
+  /* color */
+
+  --primary: #002939;
+  --secondary: #ddc190;
+
+  /* font */
+
+  --mainfont: "Open Sans", sans-serif;
+  --headingfont: "Merriweather", serif;
+}
+
+*{
+    text-decoration: none !important;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--secondary);
+}
+
+.icon-back{
+  position: relative;
+}
+
+.icon-back i{
+  font-size: 3rem;
+  position: absolute;
+  color: var(--primary);
+}
+
+.icon-back i:hover{
+  color: #fff;
+  transition: 0.3s;
+}
+
+/*------------ Login container ------------*/
+
+.box-area {
+  width: 930px;
+  box-shadow: 2px 4px 4px 1px var(--primary) !important;
+}
+
+/*------------ Right box ------------*/
+
+.right-box {
+  padding: 40px 30px 40px 40px;
+}
+
+.forgot a{
+    font-size: 0.85rem;
+    color: var(--primary);
+}
+
+.forgot a:hover{
+    color: var(--secondary);
+    text-decoration: underline !important;
+    transition: 0.3s;
+}
+
+.row p{
+    font-size: 0.9rem;
+}
+
+.row p a{
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+.row p a:hover{
+    color: var(--secondary);
+    text-decoration: underline !important;
+    transition: 0.3s;
+}
+
+/* left box */
+
+.left {
+  background-color: var(--primary);
+}
+
+.subheading {
+  width: 17rem;
+  color: var(--secondary) !important;
+}
+
+.img-fluid {
+  width: 350px;
+}
+
+/* button login */
+.btn-log {
+  border: 2px solid var(--primary);
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn-log:hover {
+  background-color: var(--secondary) !important;
+  color: #fff;
+  transition: 0.3s;
+}
+
+/*------------ Custom Placeholder ------------*/
+
+::placeholder {
+  font-size: 16px;
+}
+
+.rounded-4 {
+  border-radius: 20px;
+}
+.rounded-5 {
+  border-radius: 30px;
+}
+
+/*------------ For small screens------------*/
+
+@media only screen and (max-width: 768px) {
+  .box-area {
+    margin: 0 10px;
+  }
+  .left-box {
+    height: 100px;
+    overflow: hidden;
+  }
+  .right-box {
+    padding: 20px;
+  }
+  .img-fluid {
+    width: 250px;
+  }
+}
