@@ -211,7 +211,7 @@
                     <form action="/updatebukus" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="oldphoto" value="{{ $buku->photo }}">
-
+                        <input type="hidden" name="role" value="admin">
                         <input type="hidden" name="id" value="{{ $buku->id }}">
 
                         <div class="modal-body ps-4 pe-5 py-3 d-block d-sm-flex">
@@ -319,6 +319,7 @@
                     <form action="/hapusbukus" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{ $buku->isbn }}">
+                        <input type="hidden" name="role" value="admin">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-danger">Hapus</button>

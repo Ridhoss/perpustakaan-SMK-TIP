@@ -130,7 +130,11 @@ class AdminController extends Controller
     public function dashboard()
     {
         return view('admin.page.dashboard', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
+            'jumlahbuku' => buku::count(),
+            'jumlahpeminjaman' => pinjam::count(),
+            'jumlahanggota' => anggota::count(),
+            'jumlahadmin' => Admin::count()
         ]);
     }
 
@@ -381,11 +385,11 @@ class AdminController extends Controller
                 ->where('pengembalians.kode', 'LIKE', '%' . $request->cari . '%');
         } else {
             $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
-            ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
-            ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
-            ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-            ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-            ->groupBy('pengembalians.id', 'isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas', 'kembaliwajib');
+                ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
+                ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
+                ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
+                ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->groupBy('pengembalians.id', 'isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas', 'kembaliwajib');
         }
 
 
@@ -585,7 +589,11 @@ class AdminController extends Controller
             'address' => $request->address
         ]);
 
-        return redirect('/anggota')->with('notifadd', 'Berhasil Menambahkan');
+        if ($request->role == "admin") {
+            return redirect('/anggota')->with('notifadd', 'Berhasil Menambahkan');
+        } else {
+            return redirect('/petdataanggota')->with('notifadd', 'Berhasil Menambahkan');
+        }
     }
     // update anggota
     public function upanggota(Request $request)
@@ -615,7 +623,11 @@ class AdminController extends Controller
             'address' => $request->address
         ]);
 
-        return redirect('/anggota')->with('notifupdate', 'Berhasil Menambahkan');
+        if ($request->role == "admin") {
+            return redirect('/anggota')->with('notifupdate', 'Berhasil Menambahkan');
+        } else {
+            return redirect('/petdataanggota')->with('notifupdate', 'Berhasil Menambahkan');
+        }
     }
     // hapus anggota
     public function delanggota(Request $request)
@@ -624,7 +636,11 @@ class AdminController extends Controller
 
         $data->delete();
 
-        return redirect('/anggota')->with('notifhapus', 'Berhasil Menambahkan');
+        if ($request->role == "admin") {
+            return redirect('/anggota')->with('notifhapus', 'Berhasil Menambahkan');
+        } else {
+            return redirect('/petdataanggota')->with('notifhapus', 'Berhasil Menambahkan');
+        }
     }
 
     // admin
@@ -985,7 +1001,11 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect('/buku')->with('notifadd', 'Berhasil Menambahkan');
+        if ($request->role == "admin") {
+            return redirect('/buku')->with('notifadd', 'Berhasil Menambahkan');
+        } else {
+            return redirect('/petdatabuku')->with('notifadd', 'Berhasil Menambahkan');
+        }
     }
     // update buku
     public function upbuku(Request $request)
@@ -1166,7 +1186,11 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect('/bukus')->with('notifupdate', 'Berhasil Menambahkan');
+        if ($request->role == "admin") {
+            return redirect('/bukus')->with('notifupdate', 'Berhasil Menambahkan');
+        } else {
+            return redirect('/petdatabuku')->with('notifupdate', 'Berhasil Menambahkan');
+        }
     }
     // hapus buku
     public function delbukus(Request $request)
@@ -1176,7 +1200,11 @@ class AdminController extends Controller
 
         $data->delete();
 
-        return redirect('/bukus')->with('notifhapus', 'Berhasil Menambahkan');
+        if ($request->role == "admin") {
+            return redirect('/bukus')->with('notifhapus', 'Berhasil Menambahkan');
+        } else {
+            return redirect('/petdatabuku')->with('notifhapus', 'Berhasil Menambahkan');
+        }
     }
 
 

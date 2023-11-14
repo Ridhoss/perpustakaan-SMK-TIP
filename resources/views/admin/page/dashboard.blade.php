@@ -19,10 +19,10 @@
                         <div class="col">
                             <div class="font-weight-bold text-primary text-uppercase mb-1 ms-2">
                                 Data Buku</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">20</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">{{ $jumlahbuku }}</div>
                         </div>
                         <div class="col-auto me-3">
-                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                            <i class="fa-solid fa-book fa-2xl text-secondary"></i>
                         </div>
                     </div>
                 </div>
@@ -37,10 +37,10 @@
                         <div class="col">
                             <div class="font-weight-bold text-info text-uppercase mb-1 ms-2">
                                 Data Peminjaman</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">20</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">{{ $jumlahpeminjaman }}</div>
                         </div>
                         <div class="col-auto me-3">
-                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                            <i class="fa-solid fa-book-bookmark fa-2xl text-secondary"></i>
                         </div>
                     </div>
                 </div>
@@ -55,10 +55,10 @@
                         <div class="col">
                             <div class="font-weight-bold text-success text-uppercase mb-1 ms-2">
                                 Data Anggota</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">20</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">{{ $jumlahanggota }}</div>
                         </div>
                         <div class="col-auto me-3">
-                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                            <i class="fa-solid fa-user fa-2xl text-secondary"></i>
                         </div>
                     </div>
                 </div>
@@ -73,10 +73,10 @@
                         <div class="col">
                             <div class="font-weight-bold text-danger text-uppercase mb-1 ms-2">
                                 Data Admin</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">20</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800 ms-2">{{ $jumlahadmin }}</div>
                         </div>
                         <div class="col-auto me-3">
-                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                            <i class="fa-solid fa-chalkboard-user fa-2xl text-secondary"></i>
                         </div>
                     </div>
                 </div>

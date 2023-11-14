@@ -119,8 +119,8 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Data Utilities:</h6>
-                        <a class="collapse-item" href="/buku">Data Buku</a>
-                        <a class="collapse-item" href="/anggota">Data Anggota</a>
+                        <a class="collapse-item" href="/petdatabuku">Data Buku</a>
+                        <a class="collapse-item" href="/petdataanggota">Data Anggota</a>
                     </div>
                 </div>
             </li>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\anggota;
+use App\Models\asal;
+use App\Models\bahasa;
 use App\Models\buku;
 use App\Models\detailpinjam;
 use App\Models\kategori;
@@ -25,7 +27,10 @@ class PetugasController extends Controller
     public function dashboard()
     {
         return view('petugas.page.petdashboard', [
-            'user' => Auth::user()
+            'user' => Auth::user(),
+            'jumlahbuku' => buku::count(),
+            'jumlahpeminjaman' => pinjam::count(),
+            'jumlahanggota' => anggota::count()
         ]);
     }
     // ke halaman peminjaman
@@ -147,27 +152,63 @@ class PetugasController extends Controller
     {
 
         if ($request->has('cari')) {
-            $databuku = buku::select('bukus.id', 'bukus.isbn', 'bukus.title', 'kategoris.name AS kategori', 'bukus.kategori_id', 'bukus.penerbit_id', 'bukus.pengarang_id', 'penerbits.name AS penerbit', 'pengarangs.name AS pengarang', 'bukus.jumlah_halaman', 'bukus.stok', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo')
-                ->join('kategoris', 'kategoris.id', '=', 'bukus.kategori_id')
-                ->join('penerbits', 'penerbits.id', '=', 'bukus.penerbit_id')
-                ->join('pengarangs', 'pengarangs.id', '=', 'bukus.pengarang_id')
-                ->where('title', 'LIKE', '%' . $request->cari . '%')
-                ->OrWhere('isbn', 'LIKE', '%' . $request->cari . '%')
-                ->OrWhere('kategoris.name', 'LIKE', '%' . $request->cari . '%')
-                ->OrWhere('penerbits.name', 'LIKE', '%' . $request->cari . '%')
-                ->OrWhere('pengarangs.name', 'LIKE', '%' . $request->cari . '%');
+            $databuku = buku::select(
+                'bukus.isbn',
+                'bukus.pengarang',
+                'bukus.judul',
+                'bukus.thn_inv',
+                DB::raw('COUNT(bukus.eks) AS jumlah'),
+                'bukus.asl_id',
+                'bukus.ktg_id',
+                'bukus.bhs_id',
+                'asals.name AS asal',
+                'kategoris.name AS kategori',
+                'bahasas.name AS bahasa',
+                'bukus.tahun_terbit',
+                'bukus.sinopsis',
+                'bukus.photo',
+                'bukus.ket'
+            )
+                ->join('asals', 'bukus.asl_id', '=', 'asals.id')
+                ->join('kategoris', 'bukus.ktg_id', '=', 'kategoris.id')
+                ->join('bahasas', 'bukus.bhs_id', '=', 'bahasas.id')
+                ->groupBy('bukus.tanggal', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asal', 'kategori', 'bahasa', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket')
+                ->where('isbn', 'LIKE', '%' . $request->cari . '%')
+                ->OrWhere('judul', 'LIKE', '%' . $request->cari . '%')
+                ->OrWhere('pengarang', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $databuku = buku::select('bukus.id', 'bukus.isbn', 'bukus.title', 'kategoris.name AS kategori', 'bukus.kategori_id', 'bukus.penerbit_id', 'bukus.pengarang_id', 'penerbits.name AS penerbit', 'pengarangs.name AS pengarang', 'bukus.jumlah_halaman', 'bukus.stok', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo')
-                ->join('kategoris', 'kategoris.id', '=', 'bukus.kategori_id')
-                ->join('penerbits', 'penerbits.id', '=', 'bukus.penerbit_id')
-                ->join('pengarangs', 'pengarangs.id', '=', 'bukus.pengarang_id');
+            $databuku = buku::select(
+                'bukus.isbn',
+                'bukus.pengarang',
+                'bukus.judul',
+                'bukus.thn_inv',
+                DB::raw('COUNT(bukus.eks) AS jumlah'),
+                'bukus.asl_id',
+                'bukus.ktg_id',
+                'bukus.bhs_id',
+                'asals.name AS asal',
+                'kategoris.name AS kategori',
+                'bahasas.name AS bahasa',
+                'bukus.tahun_terbit',
+                'bukus.sinopsis',
+                'bukus.photo',
+                'bukus.ket'
+            )
+                ->join('asals', 'bukus.asl_id', '=', 'asals.id')
+                ->join('kategoris', 'bukus.ktg_id', '=', 'kategoris.id')
+                ->join('bahasas', 'bukus.bhs_id', '=', 'bahasas.id')
+                ->groupBy('bukus.tanggal', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asal', 'kategori', 'bahasa', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket');
         }
 
         $datakat = kategori::all();
-
+        $dataasal = asal::all();
+        $databahasa = bahasa::all();
+        
         return view('petugas.page.petdatabuku', [
             'databuku' => $databuku->get(),
             'lastquery' => $request->cari,
+            'dataasal' => $dataasal,
+            'databahasa' => $databahasa,
             'datakat' => $datakat,
             'user' => Auth::user()
         ]);

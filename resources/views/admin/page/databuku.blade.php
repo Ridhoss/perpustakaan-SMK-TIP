@@ -217,6 +217,7 @@
                 </div>
                 <form action="/addbuku" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="role" value="admin">
                     <div class="modal-body ps-4 pe-5 py-3 d-block d-sm-flex">
                         <div class="col-12 col-sm-6">
                             <div class="row mb-3">

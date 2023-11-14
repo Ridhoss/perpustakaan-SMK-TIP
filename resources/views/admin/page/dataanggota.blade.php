@@ -143,6 +143,7 @@
                 </div>
                 <form action="/addanggota" method="POST">
                     @csrf
+                    <input type="hidden" name="role" value="admin">
                     <div class="modal-body p-4">
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">NISN</label>
@@ -193,6 +194,7 @@
                     </div>
                     <form action="/updateanggota" method="POST">
                         @csrf
+                        <input type="hidden" name="role" value="admin">
                         <input type="hidden" name="id" value="{{ $anggota->id }}">
                         <div class="modal-body p-4">
                             <div class="row mb-3">
@@ -253,6 +255,7 @@
                     </div>
                     <form action="/hapusanggota" method="POST">
                         @csrf
+                        <input type="hidden" name="role" value="admin">
                         <input type="hidden" name="id" value="{{ $anggota->id }}">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
