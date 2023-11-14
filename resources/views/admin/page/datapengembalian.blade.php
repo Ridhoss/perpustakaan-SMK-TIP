@@ -70,14 +70,8 @@
             <tbody>
                 @php
                     $no = 1;
-                    $stok = 0;
                 @endphp
                 @foreach ($datapengembalian as $pengembalian)
-                    @php
-
-                        $stok = $pengembalian->qty;
-
-                    @endphp
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $pengembalian->kode }}</td>
@@ -114,8 +108,7 @@
                         <input type="hidden" name="kondisi" value="admin">
                         <input type="hidden" name="id" value="{{ $pengembalian->kode }}">
                         <input type="hidden" name="qtykembali" value="{{ $pengembalian->qty }}">
-                        <input type="hidden" name="stokbuku" value="{{ $pengembalian->stok }}">
-                        <input type="hidden" name="idbuku" value="{{ $pengembalian->idbuku }}">
+                        <input type="hidden" name="isbn" value="{{ $pengembalian->isbn }}">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-danger">Hapus</button>

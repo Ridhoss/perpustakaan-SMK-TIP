@@ -160,8 +160,8 @@
                     <th>Tahun Terbit</th>
                     <th>Keterangan</th>
                     <th>Sinopsis</th>
-                    <th>Gambar</th>
                     <th>Status</th>
+                    <th>Gambar</th>
                     <th>Action</th>
                 </tr>
             </thead>

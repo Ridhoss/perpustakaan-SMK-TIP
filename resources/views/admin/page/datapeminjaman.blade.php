@@ -88,7 +88,7 @@
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $peminjaman->kode }}</td>
-                        <td>{{ $peminjaman->title }}</td>
+                        <td>{{ $peminjaman->judul }}</td>
                         <td>{{ $peminjaman->anggota }}</td>
                         <td>{{ $peminjaman->tgl_pinjam }}</td>
                         <td>{{ $peminjaman->tgl_kembali }}</td>
@@ -97,13 +97,13 @@
                         <td>
                             @if ($peminjaman->status == 'dipinjam')
                                 <button class="btn btn-outline-secondary btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dipinjam</button>
+                                    data-bs-target="#kembali{{ $peminjaman->isbn }}">Dipinjam</button>
                             @elseif($peminjaman->status == 'dikembalikan')
                                 <button class="btn btn-outline-success btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dikembalikan</button>
+                                    data-bs-target="#kembali{{ $peminjaman->isbn }}" disabled>Dikembalikan</button>
                             @elseif($peminjaman->status == 'dihapus')
                                 <button class="btn btn-outline-danger btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Pengembalian Dihapus</button>
+                                    data-bs-target="#kembali{{ $peminjaman->isbn }}">Pengembalian Dihapus</button>
                             @endif
                         </td>
                         <td>
@@ -116,9 +116,10 @@
         </table>
     </div>
 
+
     <!-- Modal Pengembalian -->
     @foreach ($datapeminjaman as $peminjaman)
-        <div class="modal fade" id="kembali{{ $peminjaman->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+        <div class="modal fade" id="kembali{{ $peminjaman->isbn }}" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -133,13 +134,13 @@
                         <input type="hidden" name="qtypinjam" value="{{ $peminjaman->qty }}">
                         <input type="hidden" name="id_petugas" value="{{ $user->id }}">
                         <input type="hidden" name="tgl_kembali" value="{{ $peminjaman->tgl_kembali }}">
-                        <input type="hidden" name="stokbuku" value="{{ $peminjaman->stok }}">
-                        <input type="hidden" name="idbuku" value="{{ $peminjaman->idbuku }}">
+                        <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">
                         <input type="hidden" name="kondisi" value="admin">
                         <div class="modal-body p-4">
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Tanggal Kembali</label>
-                                <input type="date" class="form-control" name="tgl_pengembalian" value="{{ date('Y-m-d') }}" required>
+                                <input type="date" class="form-control" name="tgl_pengembalian"
+                                    value="{{ date('Y-m-d') }}" required>
                             </div>
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Jumlah Buku</label>
