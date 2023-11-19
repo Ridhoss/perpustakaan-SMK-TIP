@@ -576,8 +576,13 @@ class AdminController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('/anggota')
-                ->withErrors($validator);
+            if ($request->role == "admin") {
+                return redirect('/anggota')
+                    ->withErrors($validator);
+            } else {
+                return redirect('/petdataanggota')
+                    ->withErrors($validator);
+            }
         }
 
         anggota::create([
@@ -941,7 +946,7 @@ class AdminController extends Controller
             'tanggal' => 'required',
             'isbn' => 'required|regex:/^[0-9-]+$/',
             'pengarang' => 'required|regex:/^[a-zA-z\s]*$/',
-            'judul' => 'required|regex:/^[a-zA-Z0-9\-,.\s]+$/',
+            'judul' => 'required|regex:/^[a-zA-Z0-9&\-,.\s]+$/',
             'eks' => 'required|numeric',
             'thn_inv' => 'required|numeric',
             'asl_id' => 'required',
@@ -954,9 +959,16 @@ class AdminController extends Controller
             'jumlah' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return redirect('/buku')
-                ->withErrors($validator);
+        if ($request->kondisi == 'admin') {
+            if ($validator->fails()) {
+                return redirect('/buku')
+                    ->withErrors($validator);
+            }
+        } else {
+            if ($validator->fails()) {
+                return redirect('/petdatabuku')
+                    ->withErrors($validator);
+            }
         }
 
         if ($request->hasFile('photo')) {
@@ -1014,7 +1026,7 @@ class AdminController extends Controller
             'tanggal' => 'required',
             'isbn' => 'required|regex:/^[0-9-]+$/',
             'pengarang' => 'required|regex:/^[a-zA-z\s]*$/',
-            'judul' => 'required|regex:/^[a-zA-Z0-9\-,.\s]+$/',
+            'judul' => 'required|regex:/^[a-zA-Z0-9&\-,.\s]+$/',
             'eks' => 'required|numeric',
             'thn_inv' => 'required|numeric',
             'asl_id' => 'required',
@@ -1027,10 +1039,18 @@ class AdminController extends Controller
             'photo' => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return redirect('/buku')
-                ->withErrors($validator);
+        if ($request->role == "admin") {
+            if ($validator->fails()) {
+                return redirect('/buku')
+                    ->withErrors($validator);
+            }
+        } else {
+            if ($validator->fails()) {
+                return redirect('/petdatabuku')
+                    ->withErrors($validator);
+            }
         }
+
 
         if ($request->hasFile('photo')) {
 
@@ -1114,7 +1134,7 @@ class AdminController extends Controller
         $validator = Validator::make($request->all(), [
             'isbn' => 'required|regex:/^[0-9-]+$/',
             'pengarang' => 'required|regex:/^[a-zA-z\s]*$/',
-            'judul' => 'required|regex:/^[a-zA-Z0-9\-,.\s]+$/',
+            'judul' => 'required|regex:/^[a-zA-Z0-9&\-,.\s]+$/',
             'thn_inv' => 'required|numeric',
             'asl_id' => 'required',
             'ktg_id' => 'required',
@@ -1125,10 +1145,18 @@ class AdminController extends Controller
             'photo' => 'image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return redirect('/buku')
-                ->withErrors($validator);
+        if ($request->role == "admin") {
+            if ($validator->fails()) {
+                return redirect('/buku')
+                    ->withErrors($validator);
+            }
+        } else {
+            if ($validator->fails()) {
+                return redirect('/petdatabuku')
+                    ->withErrors($validator);
+            }
         }
+
 
         if ($request->hasFile('photo')) {
 
@@ -1220,13 +1248,22 @@ class AdminController extends Controller
             'tgl_kembali' => 'required',
             'tgl_pengembalian' => 'required',
             'qtykembali' => 'required',
+            'isbn' => 'required',
             'keterangan' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return redirect('/peminjaman')
-                ->withErrors($validator);
+        if ($request->kondisi == 'admin') {
+            if ($validator->fails()) {
+                return redirect('/peminjaman')
+                    ->withErrors($validator);
+            }
+        } else {
+            if ($validator->fails()) {
+                return redirect('/petdatapeminjaman')
+                    ->withErrors($validator);
+            }
         }
+
 
 
         $tglkembali = Carbon::parse($request->tgl_kembali);
@@ -1291,7 +1328,7 @@ class AdminController extends Controller
         $datadetail = detailpinjam::select('*')
             ->where('kode', '=', $request->id)
             ->first();
-        $datapengembalian = detailpinjam::select('*')
+        $datapengembalian = pengembalian::select('*')
             ->where('kode', '=', $request->id)
             ->first();
 

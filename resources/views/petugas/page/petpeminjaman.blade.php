@@ -25,6 +25,10 @@
             transition: 0.4s
         }
 
+        .disabled-card {
+            pointer-events: none;
+            opacity: 0.7;
+        }
 
         @media screen and (min-width: 768px) {
             .cari {
@@ -105,7 +109,7 @@
 
         {{-- start foreach buku --}}
         @foreach ($datbuku as $buku)
-            <div class="card shadow p-2 me-4 mb-4" style="width: 13rem;">
+            <div class="card shadow p-2 me-4 mb-4 {{ $buku->jumlah == 0 ? 'disabled-card' : '' }}" style="width: 13rem;">
                 <img src="{{ Storage::url('public/buku/' . $buku->photo) }}" class="img img-fluid" id="img">
                 <div class="card-body d-flex justify-content-between">
                     <div class="ket">

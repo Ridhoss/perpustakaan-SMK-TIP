@@ -43,6 +43,54 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @enderror
+        @error('kode')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('isbn')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('qtypinjam')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('id_petugas')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('tgl_kembali')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('tgl_pengembalian')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('qtykembali')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('keterangan')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
 
         {{-- end alert --}}
         {{-- button add --}}

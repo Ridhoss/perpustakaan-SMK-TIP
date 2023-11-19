@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/layout', function () {
 //     return view('petugas.layout.petlayout');
 // });
-// Route::get('/test', function () {
-//     return view('petugas.page.petdetail');
-// });
+Route::get('/test', function () {
+    return view('laporan.kartuanggota');
+});
 
 // Halaman landing
 Route::get('/', [AdminController::class, 'landing'])->middleware('guest');
@@ -187,3 +187,11 @@ Route::post('/ubahstatuspeminjaman', [AdminController::class, 'ubahpeminjaman'])
 Route::post('/hapuspeminjaman', [AdminController::class, 'delpeminjaman']);
 // hapus pengembalian (admin)
 Route::post('/hapuspengembalian', [AdminController::class, 'delpengembalian']);
+
+
+// print
+
+// hapus pengembalian (admin)
+Route::post('/printanggota', [PetugasController::class, 'printanggota']);
+
+

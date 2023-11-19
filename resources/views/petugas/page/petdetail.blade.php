@@ -88,7 +88,7 @@
                         $randomNumber = $uniqueNumbers[0];
 
                         foreach ($datbuku as $buku) {
-                            $custom = 'TIPL' . $todays . str_pad($randomNumber, 3, '0', STR_PAD_LEFT) . $buku->thn_inv . $user->id;
+                            $custom = $todays . str_pad($randomNumber, 3, '0', STR_PAD_LEFT) . $buku->thn_inv . $user->id;
 
                             $idbuku = $buku->isbn;
 
@@ -102,6 +102,7 @@
                         <input type="hidden" name="old_qty" value="{{ $oldqty }}">
                         <input type="hidden" name="isbn" value="{{ $idbuku }}">
                         <input type="hidden" name="kode" value="{{ $custom }}">
+                        <input type="hidden" name="kondisi" value="peminjaman">
                         <div class="row mb-2 px-2">
                             <label class="mb-2 fw-medium">Kode Peminjaman</label>
                             <input type="text" class="form-control text-center" placeholder="Kode" name=""
