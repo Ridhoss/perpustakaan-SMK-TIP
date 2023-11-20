@@ -20,8 +20,8 @@
 
 @section('content')
     {{-- header --}}
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Data Peminjaman</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Peminjaman</h1>
 
         {{-- alerts --}}
 
@@ -40,7 +40,7 @@
 
         {{-- end alert --}}
         {{-- button add --}}
-        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a>
+        {{-- <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a> --}}
     </div>
 
     {{-- cari --}}
@@ -100,6 +100,7 @@
                             <form action="/pinjambuku" method="POST">
                                 @csrf
                                 <input type="hidden" name="kondisi" value="print">
+                                <input type="hidden" name="role" value="petugas">
                                 <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
                                 <input type="hidden" name="id_petugas" value="{{ $peminjaman->petid }}">
                                 <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">

@@ -220,23 +220,23 @@ class PetugasController extends Controller
     {
 
         if ($request->has('cari')) {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota','anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'id_petugas','anggota', 'agtid','nisn', 'tgl_pinjam','petid', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
+                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'id_petugas', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'petid', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
                 ->where('pinjams.kode', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.name', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('bukus.judul', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota','anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid','tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
         }
 
 
@@ -345,6 +345,7 @@ class PetugasController extends Controller
 
         return view('laporan.invoice-peminjaman', [
             'kode' => $request->kode,
+            'role' => $request->role,
             'tgl_pinjam' => $request->peminjaman,
             'tgl_kembali' => $request->pengembalian,
             'petugas' => $petugas->get(),
@@ -366,10 +367,11 @@ class PetugasController extends Controller
         $ids = $request->anggota;
 
         $data = anggota::select('*')
-            ->whereIn('id',$ids);
+            ->whereIn('id', $ids);
 
-            return view('laporan.kartuanggota', [
-                'anggotas' => $data->get()
-            ]);
+        return view('laporan.kartuanggota', [
+            'anggotas' => $data->get(),
+            'role' => $request->role
+        ]);
     }
 }

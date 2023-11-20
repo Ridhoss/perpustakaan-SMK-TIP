@@ -64,21 +64,64 @@ class AdminController extends Controller
 
         if (Auth::guard('admin')->attempt($login)) {
             $request->session()->regenerate();
+            $user = Auth::guard('admin')->user();
 
-            return redirect()->intended('/dashboard');
+            if ($user) {
+                // Authentication successful, log the entry
+                DB::statement('CALL logEntry(?,?,?,?)', [
+                    $user->id,
+                    $user->username,
+                    'Login Admin',
+                    Carbon::now()
+                ]);
+                return redirect()->intended('/dashboard');
+            }
         } else if (Auth::guard('petugas')->attempt($login)) {
             $request->session()->regenerate();
+            $user = Auth::guard('petugas')->user();
 
-            return redirect()->intended('/petdashboard');
+            if ($user) {
+                // Authentication successful, log the entry
+                DB::statement('CALL logEntry(?,?,?,?)', [
+                    $user->id,
+                    $user->username,
+                    'Login Petugas',
+                    Carbon::now()
+                ]);
+                return redirect()->intended('/petdashboard');
+            }
         }
 
-        return back()->with('gallog', 'login gagal');
+        return back()->with('gallog', 'Login gagal');
     }
+
 
     // logout
     public function Logout(Request $request)
     {
-        Auth::logout();
+        if (Auth::guard('admin')->check()) {
+            $user = Auth::guard('admin')->user();
+
+            DB::statement('CALL logEntry(?,?,?,?)', [
+                $user->id,
+                $user->username,
+                'Logout Admin',
+                Carbon::now()
+            ]);
+
+            Auth::guard('admin')->logout();
+        } elseif (Auth::guard('petugas')->check()) {
+            $user = Auth::guard('petugas')->user();
+
+            DB::statement('CALL logEntry(?,?,?,?)', [
+                $user->id,
+                $user->username,
+                'Logout Petugas',
+                Carbon::now()
+            ]);
+
+            Auth::guard('petugas')->logout();
+        }
 
         $request->session()->invalidate();
 
@@ -344,23 +387,23 @@ class AdminController extends Controller
     {
 
         if ($request->has('cari')) {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.name AS petugas', 'detailpinjams.qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
+                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'id_petugas', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'petid', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
                 ->where('pinjams.kode', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.name', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('bukus.judul', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.name AS petugas', 'detailpinjams.qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
                 ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status');
+                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
         }
 
 
@@ -944,7 +987,7 @@ class AdminController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'tanggal' => 'required',
-            'isbn' => 'required|regex:/^[0-9-]+$/',
+            'isbn' => 'required|regex:/^[0-9-]+$/|unique:bukus',
             'pengarang' => 'required|regex:/^[a-zA-z\s]*$/',
             'judul' => 'required|regex:/^[a-zA-Z0-9&\-,.\s]+$/',
             'eks' => 'required|numeric',

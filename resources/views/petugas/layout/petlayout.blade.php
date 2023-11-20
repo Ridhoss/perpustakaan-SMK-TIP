@@ -33,6 +33,9 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Open+Sans:wght@300;400&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="assets/icon/css/all.min.css">
 
     <!-- Custom styles for this template-->
@@ -58,7 +61,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
@@ -195,8 +198,7 @@
                                     {{ $user->name }}
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" data-bs-toggle="modal"
-                                data-bs-target="#logout">
+                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -259,6 +261,24 @@
             </div>
         </div>
     </div>
+
+    {{-- script --}}
+    <script>
+        const alertElement = document.querySelector('.alert');
+        alertElement.classList.add('show');
+
+        // Set timeout untuk menutup alert setelah 1 detik
+        setTimeout(() => {
+            // Tambahkan animasi fade out
+            alertElement.classList.remove('show');
+            alertElement.classList.add('fade');
+
+            // Tunggu animasi fade out selesai, lalu hilangkan alert dari DOM
+            setTimeout(() => {
+                alertElement.remove();
+            }, 3000); // Ubah angka timeout sesuai kebutuhan durasi animasi fade out
+        }, 2000); // Ubah angka timeout sesuai kebutuhan waktu tampilan alert
+    </script>
 
     {{-- bootstrap --}}
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

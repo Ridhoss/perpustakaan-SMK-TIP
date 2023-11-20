@@ -20,8 +20,8 @@
 
 @section('content')
     {{-- header --}}
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Data Peminjaman</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Peminjaman</h1>
 
         {{-- alerts --}}
 
@@ -37,64 +37,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        @error('isbn')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('kode')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('isbn')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('qtypinjam')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('id_petugas')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('tgl_kembali')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('tgl_pengembalian')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('qtykembali')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
-        @error('keterangan')
-            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Failed!</strong> {{ $message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @enderror
 
         {{-- end alert --}}
         {{-- button add --}}
-        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a>
+        {{-- <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a> --}}
     </div>
 
     {{-- cari --}}
@@ -119,22 +65,18 @@
                     <th>Jumlah Pinjam</th>
                     <th>Petugas</th>
                     <th>Status</th>
+                    <th>Bukti</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @php
                     $no = 1;
-                    $stok = 0;
                 @endphp
                 @foreach ($datapeminjaman as $peminjaman)
-                    @php
-
-                        $stok = $peminjaman->qty;
-
-                    @endphp
                     <tr>
                         <td>{{ $no++ }}</td>
+                        {{-- <td>{!! DNS1D::getBarcodeHTML("$peminjaman->kode",'C39',1,50) !!}</td> --}}
                         <td>{{ $peminjaman->kode }}</td>
                         <td>{{ $peminjaman->judul }}</td>
                         <td>{{ $peminjaman->anggota }}</td>
@@ -145,14 +87,30 @@
                         <td>
                             @if ($peminjaman->status == 'dipinjam')
                                 <button class="btn btn-outline-secondary btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->isbn }}">Dipinjam</button>
+                                    data-bs-target="#kembali{{ $peminjaman->id }}">Dipinjam</button>
                             @elseif($peminjaman->status == 'dikembalikan')
                                 <button class="btn btn-outline-success btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->isbn }}" disabled>Dikembalikan</button>
+                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dikembalikan</button>
                             @elseif($peminjaman->status == 'dihapus')
                                 <button class="btn btn-outline-danger btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->isbn }}">Pengembalian Dihapus</button>
+                                    data-bs-target="#kembali{{ $peminjaman->id }}">Pengembalian Dihapus</button>
                             @endif
+                        </td>
+                        <td>
+                            <form action="/pinjambuku" method="POST">
+                                @csrf
+                                <input type="hidden" name="kondisi" value="print">
+                                <input type="hidden" name="role" value="admin">
+                                <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
+                                <input type="hidden" name="id_petugas" value="{{ $peminjaman->petid }}">
+                                <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">
+                                <input type="hidden" name="id_anggota" value="{{ $peminjaman->agtid }}">
+                                <input type="hidden" name="peminjaman" value="{{ $peminjaman->tgl_pinjam }}">
+                                <input type="hidden" name="pengembalian" value="{{ $peminjaman->tgl_kembali }}">
+                                <input type="hidden" name="old_qty" value="0">
+                                <input type="hidden" name="qty" value="{{ $peminjaman->qty }}">
+                                <button class="btn btn-success btn-sm" type="submit">Print</button>
+                            </form>
                         </td>
                         <td>
                             <button class="btn btn-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
@@ -164,16 +122,15 @@
         </table>
     </div>
 
-
     <!-- Modal Pengembalian -->
     @foreach ($datapeminjaman as $peminjaman)
-        <div class="modal fade" id="kembali{{ $peminjaman->isbn }}" data-bs-backdrop="static" data-bs-keyboard="false"
+        <div class="modal fade" id="kembali{{ $peminjaman->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Apakah anda yakin akan merubah status
-                            peminjaman?</h1>
+                            peminjaman {{ $peminjaman->kode }}?</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="/ubahstatuspeminjaman" method="POST">
@@ -192,8 +149,9 @@
                             </div>
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Jumlah Buku</label>
-                                <input type="number" class="form-control" placeholder="Jumlah Buku Yang Dikembalikan"
-                                    name="qtykembali" id="jml" required>
+                                <input type="number" class="form-control jml"
+                                    placeholder="Jumlah Buku Yang Dikembalikan"
+                                    data-stok="{{ $peminjaman->qty }}" name="qtykembali" required>
                             </div>
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Keterangan</label>
@@ -237,20 +195,21 @@
 
 
     <script>
-        const numberInput = document.getElementById('jml');
-        const stok = {{ $stok }};
+        const numberInputs = document.querySelectorAll('.jml');
 
-        numberInput.addEventListener('input', function() {
-            let value = parseFloat(this.value);
+        numberInputs.forEach(numberInput => {
+            numberInput.addEventListener('input', function() {
+                let value = parseFloat(this.value);
+                const stok = parseInt(this.getAttribute('data-stok'));
 
-            if (isNaN(value)) {
-                // Handle non-numeric input
-                this.value = 1;
-            } else if (value < 0) {
-                this.value = 0;
-            } else if (value > stok) {
-                this.value = stok;
-            }
+                if (isNaN(value)) {
+                    this.value = 1;
+                } else if (value <= 0) {
+                    this.value = 0;
+                } else if (value > stok) {
+                    this.value = stok;
+                }
+            });
         });
     </script>
 @endsection

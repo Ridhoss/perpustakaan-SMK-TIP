@@ -20,8 +20,8 @@
 
 @section('content')
     {{-- header --}}
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Data Buku</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Buku</h1>
 
         {{-- alerts --}}
         @if (session()->has('notifadd'))
@@ -279,7 +279,8 @@
                                 <textarea name="sinopsis" cols="30" rows="5" class="form-control"></textarea>
                             </div>
                             <div class="row mb-3">
-                                <label class="mb-2 fw-medium">Keterangan <span class="text-danger">(*Beri Tanda - Jika Tidak Ada)</span></label>
+                                <label class="mb-2 fw-medium">Keterangan <span class="text-danger">(*Beri Tanda - Jika
+                                        Tidak Ada)</span></label>
                                 <input type="text" class="form-control" placeholder="Keterangan" name="ket"
                                     value="-" required>
                             </div>

@@ -45,8 +45,8 @@
 
 @section('content')
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-3">
-        <h1 class="h3 mb-0 text-gray-800">Peminjaman Buku</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Peminjaman Buku</h1>
 
     </div>
 
@@ -103,6 +103,7 @@
                         <input type="hidden" name="isbn" value="{{ $idbuku }}">
                         <input type="hidden" name="kode" value="{{ $custom }}">
                         <input type="hidden" name="kondisi" value="peminjaman">
+                        <input type="hidden" name="role" value="petugas">
                         <div class="row mb-2 px-2">
                             <label class="mb-2 fw-medium">Kode Peminjaman</label>
                             <input type="text" class="form-control text-center" placeholder="Kode" name=""

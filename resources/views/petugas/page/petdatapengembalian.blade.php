@@ -20,8 +20,8 @@
 
 @section('content')
     {{-- header --}}
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Data Pengembalian</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Pengembalian</h1>
 
         {{-- alerts --}}
 
@@ -40,7 +40,7 @@
 
         {{-- end alert --}}
         {{-- button add --}}
-        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a>
+        {{-- <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a> --}}
     </div>
 
     {{-- cari --}}

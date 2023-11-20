@@ -40,8 +40,8 @@
 
 @section('content')
     <!-- Page Heading -->
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Peminjaman Buku</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Peminjaman Buku</h1>
 
         {{-- alert --}}
         @error('id_petugas')

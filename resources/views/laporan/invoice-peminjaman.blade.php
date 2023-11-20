@@ -112,7 +112,7 @@
 		</style>
 	</head>
 
-	<body onafterprint="window.location='/petdatapeminjaman'">
+	<body onafterprint="{{ $role == 'admin' ? "window.location='/peminjaman'" : "window.location='/petdatapeminjaman'" }}">
 		<div class="invoice-box">
 			<table cellpadding="0" cellspacing="0">
 				<tr class="top">

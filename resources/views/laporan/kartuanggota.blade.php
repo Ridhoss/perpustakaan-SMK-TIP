@@ -138,7 +138,8 @@
     </style>
 </head>
 
-<body onafterprint="window.location='/petdataanggota'">
+<body onafterprint="{{ $role == 'admin' ? "window.location='/anggota'" : "window.location='/petdataanggota'" }}">
+
     <div class="container">
 
         {{-- foreach here --}}

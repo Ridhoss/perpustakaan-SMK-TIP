@@ -16,8 +16,8 @@
 
 @section('content')
     {{-- header --}}
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Data Anggota</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Anggota</h1>
 
         {{-- alerts --}}
         @if (session()->has('notifadd'))
@@ -284,7 +284,6 @@
                 <form action="/printanggota" method="POST">
                     @csrf
                     <input type="hidden" name="role" value="petugas">
-                    <input type="hidden" name="id" value="{{ $anggota->id }}">
                     <div class="modal-body p-4">
                         <div class="row mb-3">
                             <label class="mb-4 fw-medium">Print Kartu Anggota</label>

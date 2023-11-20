@@ -16,8 +16,8 @@
 
 @section('content')
     {{-- header --}}
-    <div class="alert d-flex position-relative align-items-center justify-content-between">
-        <h1 class="h3 mb-0 text-gray-800">Data Anggota</h1>
+    <div class="d-flex position-relative align-items-center justify-content-between p-4">
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Anggota</h1>
 
         {{-- alerts --}}
         @if (session()->has('notifadd'))
@@ -76,8 +76,13 @@
         @enderror
 
         {{-- end alert --}}
-        {{-- button add --}}
-        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Tambah</a>
+
+        <div class="pre-btn d-flex flex-column flex-sm-row">
+            <button class="btn btn-success btn-sm me-0 me-sm-2 mb-2 mb-sm-0" data-bs-toggle="modal" data-bs-target="#print">Print</button>
+            <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal"
+                data-bs-target="#tambah">Tambah</a>
+        </div>
+
     </div>
 
     {{-- cari --}}
@@ -121,9 +126,9 @@
                         <td>{{ $anggota->phone }}</td>
                         <td>{{ $anggota->address }}</td>
                         <td class="justify-content-center align-items-center">
-                            <button class="btn btn-success btn-sm mb-2 me-1 me-sm-2" data-bs-toggle="modal"
+                            <button class="btn btn-outline-success btn-sm mb-2 me-1 me-sm-2" data-bs-toggle="modal"
                                 data-bs-target="#edit{{ $anggota->id }}">Edit</button>
-                            <button class="btn btn-danger btn-sm mb-2" data-bs-toggle="modal"
+                            <button class="btn btn-outline-danger btn-sm mb-2" data-bs-toggle="modal"
                                 data-bs-target="#hapus{{ $anggota->id }}">Hapus</button>
                         </td>
                     </tr>
@@ -266,4 +271,67 @@
             </div>
         </div>
     @endforeach
+
+    <!-- Modal Print -->
+    <div class="modal fade" id="print" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Print</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/printanggota" method="POST">
+                    @csrf
+                    <input type="hidden" name="role" value="admin">
+                    <div class="modal-body p-4">
+                        <div class="row mb-3">
+                            <label class="mb-4 fw-medium">Print Kartu Anggota</label>
+                            <div class="btn-group-vertical" role="group"
+                                aria-label="Basic checkbox toggle button group">
+
+                                <input type="checkbox" class="btn-check" id="semua" autocomplete="off">
+                                <label class="btn btn-outline-success" for="semua">Pilih Semua</label>
+
+                                @foreach ($dataanggota as $anggota)
+                                    <input type="checkbox" class="btn-check" id="{{ $anggota->id }}"
+                                        autocomplete="off" name="anggota[]" value="{{ $anggota->id }}">
+                                    <label class="btn btn-outline-secondary"
+                                        for="{{ $anggota->id }}">{{ $anggota->name }}</label>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Print</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dapatkan elemen checkbox "Pilih Semua"
+        const checkboxSemua = document.getElementById('semua');
+
+        // Dapatkan semua checkbox anggota
+        const checkboxesAnggota = document.querySelectorAll('.btn-check:not(#semua)');
+
+        // Tambahkan event listener untuk checkbox "Pilih Semua"
+        checkboxSemua.addEventListener('change', function() {
+            checkboxesAnggota.forEach(checkbox => {
+                checkbox.checked = checkboxSemua.checked;
+            });
+        });
+
+        // Tambahkan event listener untuk checkbox anggota
+        checkboxesAnggota.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Periksa apakah semua checkbox anggota terpilih
+                const semuaTerpilih = Array.from(checkboxesAnggota).every(checkbox => checkbox.checked);
+                checkboxSemua.checked = semuaTerpilih;
+            });
+        });
+    </script>
 @endsection
