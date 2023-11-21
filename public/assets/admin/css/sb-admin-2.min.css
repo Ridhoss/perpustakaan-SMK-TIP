@@ -84,9 +84,7 @@ section {
 }
 body {
     margin: 0;
-    font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-        "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-family: var(--mainfont) !important;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -9342,6 +9340,9 @@ a:focus {
 .topbar .nav-item .nav-link .img-profile {
     height: 2rem;
     width: 2rem;
+}
+.img-profile{
+    object-fit: cover;
 }
 .topbar {
     height: 4.375rem;

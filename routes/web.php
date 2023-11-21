@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('petugas.layout.petlayout');
 // });
 Route::get('/test', function () {
-    return view('laporan.kartuanggota');
+    return view('laporan.laporan-peminjaman');
 });
 
 // Halaman landing
@@ -191,7 +191,10 @@ Route::post('/hapuspengembalian', [AdminController::class, 'delpengembalian']);
 
 // print
 
-// hapus pengembalian (admin)
+// print kartu anggota
 Route::post('/printanggota', [PetugasController::class, 'printanggota']);
+
+// print laporan peminjaman
+Route::post('/printlaporan', [AdminController::class, 'printlaporan']);
 
 

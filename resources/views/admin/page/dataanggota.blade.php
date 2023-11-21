@@ -74,11 +74,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @enderror
+        @error('photo')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
 
         {{-- end alert --}}
 
         <div class="pre-btn d-flex flex-column flex-sm-row">
-            <button class="btn btn-success btn-sm me-0 me-sm-2 mb-2 mb-sm-0" data-bs-toggle="modal" data-bs-target="#print">Print</button>
+            <button class="btn btn-success btn-sm me-0 me-sm-2 mb-2 mb-sm-0" data-bs-toggle="modal"
+                data-bs-target="#print">Print</button>
             <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal"
                 data-bs-target="#tambah">Tambah</a>
         </div>
@@ -99,12 +106,14 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>NISN</th>
+                    <th>NIS</th>
                     <th>Nama</th>
                     <th>Jenis Kelamin</th>
                     <th>Tanggal Lahir</th>
                     <th>Nomor Telepon</th>
                     <th>Alamat</th>
+                    <th>Status</th>
+                    <th>Photo</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -125,10 +134,12 @@
                         <td>{{ $anggota->date }}</td>
                         <td>{{ $anggota->phone }}</td>
                         <td>{{ $anggota->address }}</td>
+                        <td>{{ $anggota->status }}</td>
+                        <td><img src="{{ Storage::url('public/anggota/' . $anggota->photo) }}" width="100" class="rounded"></td>
                         <td class="justify-content-center align-items-center">
-                            <button class="btn btn-outline-success btn-sm mb-2 me-1 me-sm-2" data-bs-toggle="modal"
+                            <button class="btn btn-outline-success btn-sm mb-2 me-1 me-sm-2 w-100" data-bs-toggle="modal"
                                 data-bs-target="#edit{{ $anggota->id }}">Edit</button>
-                            <button class="btn btn-outline-danger btn-sm mb-2" data-bs-toggle="modal"
+                            <button class="btn btn-outline-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
                                 data-bs-target="#hapus{{ $anggota->id }}">Hapus</button>
                         </td>
                     </tr>
@@ -146,7 +157,7 @@
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Anggota</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/addanggota" method="POST">
+                <form action="/addanggota" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="role" value="admin">
                     <div class="modal-body p-4">
@@ -177,6 +188,10 @@
                             <label class="mb-2 fw-medium">Alamat</label>
                             <textarea name="address" cols="30" rows="5" class="form-control"></textarea>
                         </div>
+                        <div class="row mb-3">
+                            <label class="mb-2 fw-medium">Foto</label>
+                            <input type="file" class="form-control" name="photo">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -197,9 +212,10 @@
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Anggota</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="/updateanggota" method="POST">
+                    <form action="/updateanggota" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="role" value="admin">
+                        <input type="hidden" name="oldphoto" value="{{ $anggota->photo }}">
                         <input type="hidden" name="id" value="{{ $anggota->id }}">
                         <div class="modal-body p-4">
                             <div class="row mb-3">
@@ -236,6 +252,10 @@
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Alamat</label>
                                 <textarea name="address" cols="30" rows="5" class="form-control">{{ $anggota->address }}</textarea>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="mb-2 fw-medium">Foto</label>
+                                <input type="file" class="form-control" name="photo">
                             </div>
                         </div>
                         <div class="modal-footer">

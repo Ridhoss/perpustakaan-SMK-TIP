@@ -410,6 +410,7 @@ class AdminController extends Controller
         return view('admin.page.datapeminjaman', [
             'lastquery' => $request->cari,
             'datapeminjaman' => $datapeminjaman->get(),
+            'anggotas' => anggota::all(),
             'user' => Auth::user()
         ]);
     }
@@ -615,7 +616,8 @@ class AdminController extends Controller
             'gender' => 'required',
             'date' => 'required',
             'phone' => 'required|regex:/^[\d\-\s\(\)+]+$/',
-            'address' => 'required'
+            'address' => 'required',
+            'photo' => 'image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -628,14 +630,34 @@ class AdminController extends Controller
             }
         }
 
-        anggota::create([
-            'nisn' => $request->nisn,
-            'name' => $request->name,
-            'gender' => $request->gender,
-            'date' => $request->date,
-            'phone' => $request->phone,
-            'address' => $request->address
-        ]);
+
+        if ($request->hasFile('photo')) {
+
+            $photo = $request->file('photo');
+            $photo->storeAs('public/anggota', $photo->hashName());
+
+            anggota::create([
+                'nisn' => $request->nisn,
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'date' => $request->date,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'photo' => $photo->hashName(),
+                'status' => '1'
+            ]);
+        } else {
+            anggota::create([
+                'nisn' => $request->nisn,
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'date' => $request->date,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'photo' => 'profile.png',
+                'status' => '1'
+            ]);
+        }
 
         if ($request->role == "admin") {
             return redirect('/anggota')->with('notifadd', 'Berhasil Menambahkan');
@@ -652,24 +674,63 @@ class AdminController extends Controller
             'gender' => 'required',
             'date' => 'required',
             'phone' => 'required|regex:/^[\d\-\s\(\)+]+$/',
-            'address' => 'required'
+            'address' => 'required',
+            'photo' => 'image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         if ($validator->fails()) {
-            return redirect('/anggota')
-                ->withErrors($validator);
+            if ($request->role == "admin") {
+                return redirect('/anggota')
+                    ->withErrors($validator);
+            } else {
+                return redirect('/petdataanggota')
+                    ->withErrors($validator);
+            }
         }
 
-        $data = anggota::find($request->id);
+        if ($request->hasFile('photo')) {
 
-        $data->update([
-            'nisn' => $request->nisn,
-            'name' => $request->name,
-            'gender' => $request->gender,
-            'date' => $request->date,
-            'phone' => $request->phone,
-            'address' => $request->address
-        ]);
+            if ($request->oldphoto != "default.png") {
+
+                // upload gambar
+                $photo = $request->file('photo');
+                $photo->storeAs('public/anggota', $photo->hashName());
+
+                // menghapus gambar lama
+                Storage::delete('public/anggota/' . $request->oldphoto);
+            } else {
+
+                // upload gambar
+                $photo = $request->file('photo');
+                $photo->storeAs('public/anggota', $photo->hashName());
+            }
+
+            $data = anggota::find($request->id);
+
+            $data->update([
+                'nisn' => $request->nisn,
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'date' => $request->date,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'photo' => $photo->hashName()
+            ]);
+        } else {
+
+            // update anggota tanpa gambar
+
+            $data = anggota::find($request->id);
+
+            $data->update([
+                'nisn' => $request->nisn,
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'date' => $request->date,
+                'phone' => $request->phone,
+                'address' => $request->address
+            ]);
+        }
 
         if ($request->role == "admin") {
             return redirect('/anggota')->with('notifupdate', 'Berhasil Menambahkan');
@@ -720,7 +781,22 @@ class AdminController extends Controller
         $photo = $request->file('photo');
         $photo->storeAs('public/admin', $photo->hashName());
 
-        Admin::create([
+        if ($request->hasFile('photo')) {
+
+            Admin::create([
+                'username' => $request->username,
+                'name' => $request->name,
+                'password' => $request['password'],
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'religion' => $request->religion,
+                'date' => $request->date,
+                'photo' => $photo->hashName()
+            ]);
+
+        } else {
+           Admin::create([
             'username' => $request->username,
             'name' => $request->name,
             'password' => $request['password'],
@@ -729,8 +805,9 @@ class AdminController extends Controller
             'gender' => $request->gender,
             'religion' => $request->religion,
             'date' => $request->date,
-            'photo' => $photo->hashName()
+            'photo' => 'profile.png'
         ]);
+        }
 
         return redirect('/admin')->with('notifadd', 'Berhasil Menambahkan');
     }
@@ -753,17 +830,22 @@ class AdminController extends Controller
                 ->withErrors($validator);
         }
 
-        // hashing password
-        $request['password'] = Hash::make($request['password']);
-
         if ($request->hasFile('photo')) {
 
-            // upload gambar
-            $photo = $request->file('photo');
-            $photo->storeAs('public/admin', $photo->hashName());
+            if ($request->oldphoto != "default.png") {
 
-            // menghapus gambar lama
-            Storage::delete('public/admin/' . $request->oldphoto);
+                // upload gambar
+                $photo = $request->file('photo');
+                $photo->storeAs('public/admin', $photo->hashName());
+                // menghapus gambar lama
+                Storage::delete('public/admin/' . $request->oldphoto);
+            } else {
+
+                // upload gambar
+                $photo = $request->file('photo');
+                $photo->storeAs('public/admin', $photo->hashName());
+            }
+
 
             $admin = Admin::find($request->id);
 
@@ -1419,5 +1501,110 @@ class AdminController extends Controller
         } else {
             return redirect('/petdatapengembalian')->with('notifhapus', 'Berhasil Menambahkan');
         }
+    }
+
+
+    // print
+
+    // print laporan
+    public function printlaporan(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'Start' => 'required',
+            'End' => 'required',
+        ]);
+
+        $validatorname = Validator::make($request->all(), [
+            'username' => 'required'
+        ]);
+
+        if ($validator->fails() && $validatorname->fails()) {
+
+            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+                ->orderBy('pinjams.created_at', 'asc');
+
+            $st = pinjam::select('detailpinjams.tgl_pinjam')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->orderBy('tgl_pinjam', 'asc')
+                ->first();
+
+            $en = pinjam::select('detailpinjams.tgl_pinjam')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->orderBy('tgl_pinjam', 'desc')
+                ->first();
+
+            $start = $st->tgl_pinjam;
+            $end = $en->tgl_pinjam;
+        } elseif ($validatorname->fails()) {
+
+            $start = $request->Start;
+            $end = $request->End;
+
+            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+                ->orderBy('pinjams.created_at', 'asc')
+                ->whereBetween('detailpinjams.tgl_pinjam', [$start, $end]);
+        } elseif ($validator->fails()) {
+
+            $username = $request->username;
+
+            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+                ->orderBy('pinjams.created_at', 'asc')
+                ->where('anggotas.name', '=', $username);
+
+            $st = pinjam::select('detailpinjams.tgl_pinjam')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->orderBy('tgl_pinjam', 'asc')
+                ->where('anggotas.name', '=', $username)
+                ->first();
+
+
+            $en = pinjam::select('detailpinjams.tgl_pinjam')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->orderBy('tgl_pinjam', 'asc')
+                ->where('anggotas.name', '=', $username)
+                ->first();
+
+            $start = $st->tgl_pinjam;
+            $end = $en->tgl_pinjam;
+        } else {
+
+            $username = $request->username;
+            $start = $request->Start;
+            $end = $request->End;
+
+            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
+                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+                ->orderBy('pinjams.created_at', 'asc')
+                ->where('anggotas.name', '=', $username)
+                ->whereBetween('detailpinjams.tgl_pinjam', [$start, $end]);
+        }
+
+        return view('laporan.laporan-peminjaman', [
+            'peminjamans' => $data->get(),
+            'start' => $start,
+            'end' => $end
+        ]);
     }
 }

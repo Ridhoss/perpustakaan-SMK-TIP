@@ -40,7 +40,7 @@
 
         {{-- end alert --}}
         {{-- button add --}}
-        {{-- <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#tambah">Laporan</a> --}}
+        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#laporan">Laporan</a>
     </div>
 
     {{-- cari --}}
@@ -150,8 +150,8 @@
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Jumlah Buku</label>
                                 <input type="number" class="form-control jml"
-                                    placeholder="Jumlah Buku Yang Dikembalikan"
-                                    data-stok="{{ $peminjaman->qty }}" name="qtykembali" required>
+                                    placeholder="Jumlah Buku Yang Dikembalikan" data-stok="{{ $peminjaman->qty }}"
+                                    name="qtykembali" required>
                             </div>
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Keterangan</label>
@@ -192,6 +192,49 @@
             </div>
         </div>
     @endforeach
+
+    <!-- Modal Laporan-->
+    <div class="modal fade" id="laporan" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Print Laporan Peminjaman</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="close2"></button>
+                </div>
+                <form action="/printlaporan" method="post">
+                    @csrf
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <label class="mb-2">Mulai Dari Tanggal</label>
+                            <input type="date" class="form-control" name="Start" id="input">
+                        </div>
+                        <div class="row mt-3">
+                            <label class="mb-2">Sampai Tanggal</label>
+                            <input type="date" class="form-control" name="End" id="input2">
+                        </div>
+                        <div class="row mt-3">
+                            <label class="mb-2">Laporan Berdasarkan Anggota</label>
+                            {{-- <input type="text" class="form-control" name="username" id="username" placeholder="Search By Username"> --}}
+                            <select name="username" id="" class="form-select">
+                                <option value="">-- Print By User --</option>
+                                @foreach ($anggotas as $anggota)
+                                    <option value="{{ $anggota->name }}">{{ $anggota->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            id="close">Close</button>
+                        <button type="submit" class="btn btn-primary">Print</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
     <script>

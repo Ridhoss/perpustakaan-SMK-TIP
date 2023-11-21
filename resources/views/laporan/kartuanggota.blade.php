@@ -29,7 +29,7 @@
         }
 
         .container {
-            height: 100vh;
+            height: 80vh;
             width: 100%;
             display: flex;
             /* align-items: center; */
@@ -126,6 +126,12 @@
             margin: 20px 0px 0px 10px;
         }
 
+        .top img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+        }
+
         .qr p {
             font-size: 10px;
             margin-bottom: 2px;
@@ -148,16 +154,23 @@
             <div class="padding">
                 <div class="font">
                     <div class="top">
-                        <img src="assets/kartuanggota/profile.png" />
+                        <img src="{{ Storage::url('public/anggota/' . $anggota->photo) }}">
                     </div>
                     <div class="">
                         <div class="ename">
                             <p class="p1">{{ $anggota->name }}</p>
-                            <p class="p2">NISN : {{ $anggota->nisn }}</p>
+                            <p class="p2">NIS : {{ $anggota->nisn }}</p>
                         </div>
                         <div class="edetails">
                             <p><b>Tanggal Lahir :</b>
                                 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $anggota->date)->format('d F Y') }}</p>
+                            <p><b>Jenis Kelamin :</b>
+                                @if ($anggota->gender == "P")
+                                    Perempuan
+                                @else
+                                    Laki - Laki
+                                @endif
+                            </p>
                             <p><b>Nomor :</b> {{ $anggota->phone }}</p>
                         </div>
 
