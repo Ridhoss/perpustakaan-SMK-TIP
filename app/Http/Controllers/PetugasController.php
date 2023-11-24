@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\PeminjamanChart;
 use App\Models\anggota;
 use App\Models\asal;
 use App\Models\bahasa;
@@ -25,9 +26,10 @@ class PetugasController extends Controller
     // Route
 
     // ke halaman dashboard
-    public function dashboard()
+    public function dashboard(PeminjamanChart $chart)
     {
         return view('petugas.page.petdashboard', [
+            'chart' => $chart->build(),
             'user' => Auth::user(),
             'jumlahbuku' => buku::count(),
             'jumlahpeminjaman' => pinjam::count(),
@@ -251,6 +253,15 @@ class PetugasController extends Controller
     public function datapengembalian(Request $request)
     {
 
+        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+            ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
+            ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+            ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+            ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
+            ->where('pinjams.status', 'dipinjam')
+            ->orWhere('pinjams.status', 'dihapus')
+            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+
         if ($request->has('cari')) {
             $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
                 ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
@@ -271,7 +282,9 @@ class PetugasController extends Controller
 
         return view('petugas.page.petdatapengembalian', [
             'lastquery' => $request->cari,
+            'lastquerymodal' => $request->searchpeminjaman,
             'datapengembalian' => $datapengembalian->get(),
+            'datapeminjaman' => $datapeminjaman->get(),
             'user' => Auth::user()
         ]);
     }

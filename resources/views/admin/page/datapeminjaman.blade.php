@@ -87,13 +87,13 @@
                         <td>
                             @if ($peminjaman->status == 'dipinjam')
                                 <button class="btn btn-outline-secondary btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}">Dipinjam</button>
+                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dipinjam</button>
                             @elseif($peminjaman->status == 'dikembalikan')
                                 <button class="btn btn-outline-success btn-sm mb-2" data-bs-toggle="modal"
                                     data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dikembalikan</button>
                             @elseif($peminjaman->status == 'dihapus')
                                 <button class="btn btn-outline-danger btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}">Pengembalian Dihapus</button>
+                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Pengembalian Dihapus</button>
                             @endif
                         </td>
                         <td>
@@ -121,52 +121,6 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Modal Pengembalian -->
-    @foreach ($datapeminjaman as $peminjaman)
-        <div class="modal fade" id="kembali{{ $peminjaman->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
-            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Apakah anda yakin akan merubah status
-                            peminjaman {{ $peminjaman->kode }}?</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form action="/ubahstatuspeminjaman" method="POST">
-                        @csrf
-                        <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
-                        <input type="hidden" name="qtypinjam" value="{{ $peminjaman->qty }}">
-                        <input type="hidden" name="id_petugas" value="{{ $user->id }}">
-                        <input type="hidden" name="tgl_kembali" value="{{ $peminjaman->tgl_kembali }}">
-                        <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">
-                        <input type="hidden" name="kondisi" value="admin">
-                        <div class="modal-body p-4">
-                            <div class="row mb-3">
-                                <label class="mb-2 fw-medium">Tanggal Kembali</label>
-                                <input type="date" class="form-control" name="tgl_pengembalian"
-                                    value="{{ date('Y-m-d') }}" required>
-                            </div>
-                            <div class="row mb-3">
-                                <label class="mb-2 fw-medium">Jumlah Buku</label>
-                                <input type="number" class="form-control jml"
-                                    placeholder="Jumlah Buku Yang Dikembalikan" data-stok="{{ $peminjaman->qty }}"
-                                    name="qtykembali" required>
-                            </div>
-                            <div class="row mb-3">
-                                <label class="mb-2 fw-medium">Keterangan</label>
-                                <textarea name="keterangan" cols="30" rows="5" class="form-control" required></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Dikembalikan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endforeach
 
     <!-- Modal Hapus -->
     @foreach ($datapeminjaman as $peminjaman)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\PeminjamanChart;
 use App\Models\Admin;
 use App\Models\anggota;
 use App\Models\asal;
@@ -170,9 +171,12 @@ class AdminController extends Controller
     }
 
     // ke halaman dashboard
-    public function dashboard()
+    public function dashboard(PeminjamanChart $chart)
     {
+
+
         return view('admin.page.dashboard', [
+            'chart' => $chart->build(),
             'user' => Auth::user(),
             'jumlahbuku' => buku::count(),
             'jumlahpeminjaman' => pinjam::count(),
@@ -419,6 +423,15 @@ class AdminController extends Controller
     public function datapengembalian(Request $request)
     {
 
+        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+            ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
+            ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+            ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+            ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
+            ->where('pinjams.status', 'dipinjam')
+            ->orWhere('pinjams.status', 'dihapus')
+            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+
         if ($request->has('cari')) {
             $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
                 ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
@@ -440,6 +453,7 @@ class AdminController extends Controller
         return view('admin.page.datapengembalian', [
             'lastquery' => $request->cari,
             'datapengembalian' => $datapengembalian->get(),
+            'datapeminjaman' => $datapeminjaman->get(),
             'user' => Auth::user()
         ]);
     }
@@ -794,19 +808,18 @@ class AdminController extends Controller
                 'date' => $request->date,
                 'photo' => $photo->hashName()
             ]);
-
         } else {
-           Admin::create([
-            'username' => $request->username,
-            'name' => $request->name,
-            'password' => $request['password'],
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'gender' => $request->gender,
-            'religion' => $request->religion,
-            'date' => $request->date,
-            'photo' => 'profile.png'
-        ]);
+            Admin::create([
+                'username' => $request->username,
+                'name' => $request->name,
+                'password' => $request['password'],
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'religion' => $request->religion,
+                'date' => $request->date,
+                'photo' => 'profile.png'
+            ]);
         }
 
         return redirect('/admin')->with('notifadd', 'Berhasil Menambahkan');
@@ -1371,10 +1384,7 @@ class AdminController extends Controller
             'qtypinjam' => 'required',
             'id_petugas' => 'required',
             'tgl_kembali' => 'required',
-            'tgl_pengembalian' => 'required',
-            'qtykembali' => 'required',
             'isbn' => 'required',
-            'keterangan' => 'required'
         ]);
 
         if ($request->kondisi == 'admin') {
@@ -1384,7 +1394,7 @@ class AdminController extends Controller
             }
         } else {
             if ($validator->fails()) {
-                return redirect('/petdatapeminjaman')
+                return redirect('/petdatapengembalian')
                     ->withErrors($validator);
             }
         }
@@ -1394,8 +1404,7 @@ class AdminController extends Controller
         $tglkembali = Carbon::parse($request->tgl_kembali);
         $tglhariini = Carbon::parse(date('Y-m-d'));
 
-        $denda_hilang = 100000;
-        $denda_telat = 5000;
+        $denda_telat = 2000;
 
         if ($tglhariini->isAfter($tglkembali)) {
             $jarak = $tglkembali->diff($tglhariini);
@@ -1404,19 +1413,19 @@ class AdminController extends Controller
             $jarakhari = 0;
         }
 
-        $qty = $request->qtypinjam - $request->qtykembali;
-
-        $dendahilang = $qty * $denda_hilang;
         $dendatelat = $denda_telat * $jarakhari;
 
-        $denda = $dendahilang + $dendatelat;
+        if ($dendatelat > 100000) {
+            $dendatelat = 100000;
+        }
+
 
         pengembalian::create([
             'kode' => $request->kode,
-            'tgl_kembali' => $request->tgl_pengembalian,
-            'denda' => $denda,
-            'qty' => $request->qtykembali,
-            'keterangan' => $request->keterangan,
+            'tgl_kembali' => $tglhariini,
+            'denda' => $dendatelat,
+            'qty' => $request->qtypinjam,
+            'keterangan' => 'Dikembalikan',
             'id_petugas' => $request->id_petugas
         ]);
 
@@ -1439,9 +1448,9 @@ class AdminController extends Controller
 
 
         if ($request->kondisi == 'admin') {
-            return redirect('/peminjaman')->with('notifubah', 'Berhasil Menambahkan');
+            return redirect('/pengembalian')->with('notifubah', 'Berhasil Menambahkan');
         } else {
-            return redirect('/petdatapeminjaman')->with('notifubah', 'Berhasil Menambahkan');
+            return redirect('/petdatapengembalian')->with('notifubah', 'Berhasil Menambahkan');
         }
     }
     // hapus peminjaman
