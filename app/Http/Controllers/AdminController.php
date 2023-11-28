@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\table;
+
 class AdminController extends Controller
 {
     // Register
@@ -174,6 +176,29 @@ class AdminController extends Controller
     public function dashboard(PeminjamanChart $chart)
     {
 
+        $subquery = pinjam::select('id_buku', DB::raw('COUNT(id_buku) AS jumlah_sebelum_group'))
+            ->groupBy('id_buku');
+
+        $bukularis = pinjam::select('pinjams.id_buku', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
+            ->leftJoinSub($subquery, 'sub', function ($join) {
+                $join->on('pinjams.id_buku', '=', 'sub.id_buku');
+            })
+            ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+            ->groupBy('id_buku', 'judul', 'jumlah_sebelum_group')
+            ->orderBy('jumlah', 'desc')
+            ->take(5);
+
+        $anggotafav = pinjam::select('pinjams.id_anggota', 'anggotas.name', DB::raw('COUNT(pinjams.id) AS jumlah'))
+            ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+            ->groupBy('pinjams.id_anggota', 'anggotas.name')
+            ->orderBy('jumlah', 'desc')
+            ->take(5);
+
+        $history = DB::table('logpeminjaman')
+            ->select('*')
+            ->orderBy('log_time','desc')
+            ->take(5);
+
 
         return view('admin.page.dashboard', [
             'chart' => $chart->build(),
@@ -181,7 +206,10 @@ class AdminController extends Controller
             'jumlahbuku' => buku::count(),
             'jumlahpeminjaman' => pinjam::count(),
             'jumlahanggota' => anggota::count(),
-            'jumlahadmin' => Admin::count()
+            'jumlahadmin' => Admin::count(),
+            'datalaris' => $bukularis->get(),
+            'datalog' => $history->get(),
+            'anggotafav' => $anggotafav->get()
         ]);
     }
 
