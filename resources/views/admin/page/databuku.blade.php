@@ -474,7 +474,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         id="close2"></button>
                 </div>
-                <form action="/printlaporan" method="post">
+                <form action="/printlaporanbuku" method="post">
                     @csrf
                     <div class="modal-body p-4">
                         <div class="row">

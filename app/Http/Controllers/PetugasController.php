@@ -377,10 +377,21 @@ class PetugasController extends Controller
     // print anggota
     public function printanggota(Request $request)
     {
-        $ids = $request->anggota;
 
-        $data = anggota::select('*')
-            ->whereIn('id', $ids);
+        $validator = Validator::make($request->all(), [
+            'anggota' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+
+            $data = anggota::select('*');
+        } else {
+            $ids = $request->anggota;
+
+            $data = anggota::select('*')
+                ->whereIn('id', $ids);
+        }
+
 
         return view('laporan.kartuanggota', [
             'anggotas' => $data->get(),

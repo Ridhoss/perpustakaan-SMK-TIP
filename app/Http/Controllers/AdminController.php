@@ -1616,4 +1616,50 @@ class AdminController extends Controller
             'end' => $end
         ]);
     }
+
+    // print laporan buku
+    public function printlaporanbuku(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'Start' => 'required',
+            'End' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+
+            $data = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+                ->join('asals', 'asals.id', '=', 'bukus.asl_id')
+                ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
+                ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id');
+
+            $st = buku::select('bukus.tanggal')
+                ->orderBy('tanggal', 'asc')
+                ->first();
+
+
+            $en = buku::select('bukus.tanggal')
+                ->orderBy('tanggal', 'desc')
+                ->first();
+
+            $start = $st->tanggal;
+            $end = $en->tanggal;
+        } else {
+
+            $start = $request->Start;
+            $end = $request->End;
+
+            $data = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+                ->join('asals', 'asals.id', '=', 'bukus.asl_id')
+                ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
+                ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id')
+                ->whereBetween('bukus.tanggal', [$start, $end]);
+        }
+
+        return view('laporan.laporan-buku', [
+            'databuku' => $data->get(),
+            'start' => $start,
+            'end' => $end
+        ]);
+    }
 }

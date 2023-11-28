@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('petugas.layout.petlayout');
 // });
 Route::get('/test', function () {
-    return view('laporan.laporan-peminjaman');
+    return view('laporan.laporan-buku');
 });
 
 // Halaman landing
@@ -196,5 +196,8 @@ Route::post('/printanggota', [PetugasController::class, 'printanggota']);
 
 // print laporan peminjaman
 Route::post('/printlaporan', [AdminController::class, 'printlaporan']);
+
+// print laporan buku
+Route::post('/printlaporanbuku', [AdminController::class, 'printlaporanbuku']);
 
 
