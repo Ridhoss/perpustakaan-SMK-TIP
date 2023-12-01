@@ -83,8 +83,81 @@
                 </div>
             </div>
 
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold">Buku Terlaris</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <table class="table text-center table-striped">
+                            <thead>
+                                <tr class="table-warning">
+                                    <th>No</th>
+                                    <th>Judul</th>
+                                    <th>Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($datalaris as $laris)
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ $laris->judul }}</td>
+                                        <td>{{ $laris->jumlah }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+
         </div>
 
+        <div class="row">
+
+            {{-- grafik chart --}}
+            <div class="col-xl-8 col-lg-7">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold">Anggota Ter Favorit</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <table class="table text-center table-striped">
+                            <thead>
+                                <tr class="table-success">
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Jumlah Pinjam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($anggotafav as $fav)
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ Str::limit($fav->name, 15) }}</td>
+                                        <td>{{ $fav->jumlah }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script src="{{ $chart->cdn() }}"></script>

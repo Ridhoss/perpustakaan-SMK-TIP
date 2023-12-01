@@ -28,12 +28,32 @@ class PetugasController extends Controller
     // ke halaman dashboard
     public function dashboard(PeminjamanChart $chart)
     {
+        $subquery = pinjam::select('id_buku', DB::raw('COUNT(id_buku) AS jumlah_sebelum_group'))
+            ->groupBy('id_buku');
+
+        $bukularis = pinjam::select('pinjams.id_buku', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
+            ->leftJoinSub($subquery, 'sub', function ($join) {
+                $join->on('pinjams.id_buku', '=', 'sub.id_buku');
+            })
+            ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+            ->groupBy('id_buku', 'judul', 'jumlah_sebelum_group')
+            ->orderBy('jumlah', 'desc')
+            ->take(5);
+
+        $anggotafav = pinjam::select('pinjams.id_anggota', 'anggotas.name', DB::raw('COUNT(pinjams.id) AS jumlah'))
+            ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+            ->groupBy('pinjams.id_anggota', 'anggotas.name')
+            ->orderBy('jumlah', 'desc')
+            ->take(5);
+
         return view('petugas.page.petdashboard', [
             'chart' => $chart->build(),
             'user' => Auth::user(),
             'jumlahbuku' => buku::count(),
             'jumlahpeminjaman' => pinjam::count(),
-            'jumlahanggota' => anggota::count()
+            'jumlahanggota' => anggota::count(),
+            'datalaris' => $bukularis->get(),
+            'anggotafav' => $anggotafav->get()
         ]);
     }
     // ke halaman peminjaman
@@ -101,6 +121,33 @@ class PetugasController extends Controller
     public function peminjamandetail(Request $request)
     {
 
+        $todays = date('Ymd');
+
+        // Mendapatkan nomor terakhir dari database
+        $lastNumber = pinjam::orderBy('id', 'desc')->value('kode');
+
+
+        $start = 0;
+
+        // Jika ada nomor terakhir yang ada sebelumnya, ambil angka terakhirnya
+        if ($lastNumber == null) {
+            $noAkhir = 0;
+            $start = $noAkhir + 1;
+        } else {
+            if ($lastNumber) {
+                $noAkhir = (int) substr($lastNumber, -5);
+                $start = $noAkhir + 1;
+            }
+        }
+
+        $end = min($start, 99999); // Ambil 5 nomor terakhir atau hingga 99999
+
+        for ($i = $start; $i <= $end; $i++) {
+            $newNumber = str_pad($i, 5, '0', STR_PAD_LEFT); // Format nomor dengan panjang 5 digit, mengisi dengan '0' di depan jika kurang dari 5 digit
+        }
+
+        $randomNumber = $todays . $newNumber;
+
         $buku = buku::select(
             'bukus.isbn',
             'bukus.pengarang',
@@ -126,10 +173,13 @@ class PetugasController extends Controller
             ->where('bukus.isbn', '=', $request->buku)
             ->take(1);
 
+
+
         return view('petugas.page.petdetail', [
             'user' => Auth::user(),
             'datbuku' => $buku->get(),
-            'datanggota' => anggota::all()
+            'datanggota' => anggota::all(),
+            'custom' => $randomNumber
         ]);
     }
 

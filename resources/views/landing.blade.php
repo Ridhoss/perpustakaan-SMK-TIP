@@ -172,11 +172,11 @@
                                             <p class="label text-center py-2 rounded">{{ $buku->judul }}</p>
                                             <p>{{ $buku->jumlah }} Buku</p>
                                         </div>
-                                        <div class="btn-card">
+                                        {{-- <div class="btn-card">
                                             <a href="" class="btn">
                                                 <i class="fa-solid fa-book"></i>
                                             </a>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             @endforeach

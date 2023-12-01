@@ -72,24 +72,7 @@
                         $today = date('Y-m-d');
                         $todays = date('Ymd');
 
-                        $min = 1;
-                        $max = 99999;
-                        $count = 5;
-
-                        function generateUniqueRandomNumber($min, $max, $count)
-                        {
-                            $numbers = range($min, $max);
-                            shuffle($numbers);
-                            return array_slice($numbers, 0, $count);
-                        }
-
-                        $uniqueNumbers = generateUniqueRandomNumber(1, 100, 10);
-
-                        $randomNumber = $uniqueNumbers[0];
-
                         foreach ($datbuku as $buku) {
-                            $custom = $todays . str_pad($randomNumber, 3, '0', STR_PAD_LEFT) . $buku->thn_inv . $user->id;
-
                             $idbuku = $buku->isbn;
 
                             $oldqty = $buku->jumlah;

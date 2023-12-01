@@ -15,7 +15,7 @@
 </head>
 
 <body onafterprint="window.location='/peminjaman'">
-    <div class="container">
+    <div class="container-fluid">
         <h1 class="text-center mt-5">TIP Literation</h1>
         <p class="text-center">Jl. Ciseupan No.269, Cibeber, Kec. Cimahi Sel., Kota Cimahi, Jawa
             Barat 40531</p>

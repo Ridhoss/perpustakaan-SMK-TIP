@@ -24,10 +24,9 @@ class PeminjamanChart
 
         for ($i = 1; $i <= $bulan; $i++) {
             $totalpinjam = pinjam::select('*')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
                 ->whereYear('pinjams.created_at', $tahun)
                 ->whereMonth('pinjams.created_at', $i)
-                ->sum('qty');
+                ->count();
 
             $databulan[] = Carbon::create()->month($i)->format('F');
             $datatotal[] = $totalpinjam;
