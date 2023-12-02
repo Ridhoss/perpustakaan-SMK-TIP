@@ -148,6 +148,7 @@
                                         <th>No</th>
                                         <th>Kode Peminjaman</th>
                                         <th>Buku</th>
+                                        <th>NISN</th>
                                         <th>Peminjam</th>
                                         <th>Tanggal Pinjam</th>
                                         <th>Tanggal Kembali</th>
@@ -166,6 +167,7 @@
                                             {{-- <td>{!! DNS1D::getBarcodeHTML("$peminjaman->kode",'C39',1,50) !!}</td> --}}
                                             <td>{{ $peminjaman->kode }}</td>
                                             <td>{{ $peminjaman->judul }}</td>
+                                            <td>{{ $peminjaman->nisn }}</td>
                                             <td>{{ $peminjaman->anggota }}</td>
                                             <td>{{ $peminjaman->tgl_pinjam }}</td>
                                             <td>{{ $peminjaman->tgl_kembali }}</td>
@@ -182,6 +184,8 @@
                                                         value="{{ $peminjaman->tgl_kembali }}">
                                                     <input type="hidden" name="isbn"
                                                         value="{{ $peminjaman->isbn }}">
+                                                    <input type="hidden" name="nisn"
+                                                        value="{{ $peminjaman->nisn }}">
                                                     <input type="hidden" name="kondisi" value="admin">
 
 

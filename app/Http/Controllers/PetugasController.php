@@ -41,7 +41,7 @@ class PetugasController extends Controller
             ->take(5);
 
         $anggotafav = pinjam::select('pinjams.id_anggota', 'anggotas.name', DB::raw('COUNT(pinjams.id) AS jumlah'))
-            ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+            ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
             ->groupBy('pinjams.id_anggota', 'anggotas.name')
             ->orderBy('jumlah', 'desc')
             ->take(5);
@@ -178,7 +178,7 @@ class PetugasController extends Controller
         return view('petugas.page.petdetail', [
             'user' => Auth::user(),
             'datbuku' => $buku->get(),
-            'datanggota' => anggota::all(),
+            'datanggota' => anggota::all()->where('status', '=', '1'),
             'custom' => $randomNumber
         ]);
     }
@@ -274,7 +274,7 @@ class PetugasController extends Controller
         if ($request->has('cari')) {
             $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-                ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
                 ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'id_petugas', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'petid', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
@@ -283,12 +283,12 @@ class PetugasController extends Controller
                 ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('bukus.judul', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-                ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
         }
 
 
@@ -303,14 +303,14 @@ class PetugasController extends Controller
     public function datapengembalian(Request $request)
     {
 
-        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
             ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-            ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+            ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
             ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
             ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
             ->where('pinjams.status', 'dipinjam')
             ->orWhere('pinjams.status', 'dihapus')
-            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
 
         if ($request->has('cari')) {
             $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
@@ -361,10 +361,18 @@ class PetugasController extends Controller
             'old_qty' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return redirect('/petpeminjaman')
-                ->withErrors($validator);
+        if ($request->role == 'admin') {
+            if ($validator->fails()) {
+                return redirect('/peminjaman')
+                    ->withErrors($validator);
+            }
+        } else {
+            if ($validator->fails()) {
+                return redirect('/petpeminjaman')
+                    ->withErrors($validator);
+            }
         }
+
 
         if ($request->kondisi == "peminjaman") {
             // $qtybaru = $request->old_qty - $request->qty;
@@ -373,6 +381,11 @@ class PetugasController extends Controller
                 ->where('isbn', '=', $request->isbn)
                 ->where('status', '=', '1')
                 ->take($request->qty);
+
+            $anggota = anggota::select('*')
+                ->where('nisn', '=', $request->id_anggota)
+                ->where('status', '=', '1')
+                ->first();
 
             pinjam::create([
                 'kode' => $request->kode,
@@ -392,6 +405,10 @@ class PetugasController extends Controller
             $buku->update([
                 'status' => '0'
             ]);
+
+            $anggota->update([
+                'status' => '0'
+            ]);
         }
 
         // query ke halaman invoice
@@ -400,7 +417,7 @@ class PetugasController extends Controller
             ->where('id', '=', $request->id_petugas);
 
         $anggota = anggota::select('nisn', 'name')
-            ->where('id', '=', $request->id_anggota);
+            ->where('nisn', '=', $request->id_anggota);
 
         $buku = buku::select('judul')
             ->where('isbn', '=', $request->isbn)

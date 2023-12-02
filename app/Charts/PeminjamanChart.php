@@ -3,6 +3,7 @@
 namespace App\Charts;
 
 use App\Models\anggota;
+use App\Models\buku;
 use App\Models\pinjam;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Carbon\Carbon;
@@ -42,11 +43,22 @@ class PeminjamanChart
             $datatotalanggota[] = $totalanggota;
         }
 
+        for ($i = 1; $i <= $bulan; $i++) {
+            $totalbuku = buku::select('*')
+                ->whereYear('created_at', $tahun)
+                ->whereMonth('created_at', $i)
+                ->count();
+
+            // $databulananggota[] = Carbon::create()->month($i)->format('F');
+            $datatotalbuku[] = $totalbuku;
+        }
+
         return $this->chart->lineChart()
             // ->setTitle('Peminjaman Buku TIP Literation')
             // ->setSubtitle('Total Peminjaman Buku Perbulan')
             ->addData('Total Anggota', $datatotalanggota)
             ->addData('Total Peminjaman', $datatotal)
+            ->addData('Total Buku', $datatotalbuku)
             ->setHeight(250)
             ->setXAxis($databulan);
     }

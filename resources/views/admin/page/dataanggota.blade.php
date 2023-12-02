@@ -134,8 +134,15 @@
                         <td>{{ $anggota->date }}</td>
                         <td>{{ $anggota->phone }}</td>
                         <td>{{ $anggota->address }}</td>
-                        <td>{{ $anggota->status }}</td>
-                        <td><img src="{{ Storage::url('public/anggota/' . $anggota->photo) }}" width="100" class="rounded"></td>
+                        <td>
+                            @if ($anggota->status == 1)
+                                <button class="btn btn-outline-success btn-sm mb-2 w-100" disabled>Aktif</button>
+                            @else
+                                <button class="btn btn-warning text-white btn-sm mb-2 w-100" disabled>Meminjam</button>
+                            @endif
+                        </td>
+                        <td><img src="{{ Storage::url('public/anggota/' . $anggota->photo) }}" width="100"
+                                class="rounded"></td>
                         <td class="justify-content-center align-items-center">
                             <button class="btn btn-outline-success btn-sm mb-2 me-1 me-sm-2 w-100" data-bs-toggle="modal"
                                 data-bs-target="#edit{{ $anggota->id }}">Edit</button>
@@ -256,6 +263,18 @@
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Foto</label>
                                 <input type="file" class="form-control" name="photo">
+                            </div>
+                            <div class="row mb-3">
+                                <label class="mb-2 fw-medium">Status</label>
+                                <select name="status" class="form-control">
+                                    @if ($anggota->status == 1)
+                                        <option value="1">Aktif</option>
+                                        <option value="0">Meminjam</option>
+                                    @else
+                                        <option value="0">Meminjam</option>
+                                        <option value="1">Aktif</option>
+                                    @endif
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">

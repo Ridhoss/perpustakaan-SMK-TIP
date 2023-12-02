@@ -37,10 +37,60 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
+        {{-- alert print --}}
+        @error('id_petugas')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('kode')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('id_buku')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('id_anggota')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('peminjaman')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('pengembalian')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('qty')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
+        @error('old_qty')
+            <div class="alert alert-danger alert-dismissible fade show position-absolute top-0 end-0" role="alert">
+                <strong>Data Failed!</strong> {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @enderror
 
         {{-- end alert --}}
         {{-- button add --}}
-        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#laporan">Laporan</a>
+        <a class="mt-0 mt-sm-0 btn btn-sm btn-primary shadow-sm" data-bs-toggle="modal"
+            data-bs-target="#laporan">Laporan</a>
     </div>
 
     {{-- cari --}}
@@ -104,7 +154,7 @@
                                 <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
                                 <input type="hidden" name="id_petugas" value="{{ $peminjaman->petid }}">
                                 <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">
-                                <input type="hidden" name="id_anggota" value="{{ $peminjaman->agtid }}">
+                                <input type="hidden" name="id_anggota" value="{{ $peminjaman->nisn }}">
                                 <input type="hidden" name="peminjaman" value="{{ $peminjaman->tgl_pinjam }}">
                                 <input type="hidden" name="pengembalian" value="{{ $peminjaman->tgl_kembali }}">
                                 <input type="hidden" name="old_qty" value="0">

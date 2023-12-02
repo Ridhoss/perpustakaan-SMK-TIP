@@ -189,14 +189,14 @@ class AdminController extends Controller
             ->take(5);
 
         $anggotafav = pinjam::select('pinjams.id_anggota', 'anggotas.name', DB::raw('COUNT(pinjams.id) AS jumlah'))
-            ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+            ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
             ->groupBy('pinjams.id_anggota', 'anggotas.name')
             ->orderBy('jumlah', 'desc')
             ->take(5);
 
         $history = DB::table('logpeminjaman')
             ->select('*')
-            ->orderBy('log_time','desc')
+            ->orderBy('log_time', 'desc')
             ->take(5);
 
 
@@ -318,7 +318,7 @@ class AdminController extends Controller
     {
 
         if ($request->has('cari')) {
-            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.tanggal AS tgls', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
                 ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id')
@@ -327,7 +327,7 @@ class AdminController extends Controller
                 ->OrWhere('pengarang', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('no_inv', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.tanggal AS tgls', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
                 ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id');
@@ -421,7 +421,7 @@ class AdminController extends Controller
         if ($request->has('cari')) {
             $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-                ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
                 ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'id_petugas', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'petid', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
@@ -430,12 +430,12 @@ class AdminController extends Controller
                 ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('bukus.judul', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
                 ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-                ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
         }
 
 
@@ -451,14 +451,15 @@ class AdminController extends Controller
     public function datapengembalian(Request $request)
     {
 
-        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
+        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
             ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-            ->join('anggotas', 'anggotas.id', '=', 'pinjams.id_anggota')
+            ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
             ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
             ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
             ->where('pinjams.status', 'dipinjam')
             ->orWhere('pinjams.status', 'dihapus')
-            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+
 
         if ($request->has('cari')) {
             $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
@@ -717,7 +718,8 @@ class AdminController extends Controller
             'date' => 'required',
             'phone' => 'required|regex:/^[\d\-\s\(\)+]+$/',
             'address' => 'required',
-            'photo' => 'image|mimes:jpg,jpeg,png|max:2048'
+            'photo' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'status' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -756,7 +758,8 @@ class AdminController extends Controller
                 'date' => $request->date,
                 'phone' => $request->phone,
                 'address' => $request->address,
-                'photo' => $photo->hashName()
+                'photo' => $photo->hashName(),
+                'status' => $request->status
             ]);
         } else {
 
@@ -770,7 +773,8 @@ class AdminController extends Controller
                 'gender' => $request->gender,
                 'date' => $request->date,
                 'phone' => $request->phone,
-                'address' => $request->address
+                'address' => $request->address,
+                'status' => $request->status
             ]);
         }
 
@@ -1185,7 +1189,7 @@ class AdminController extends Controller
             return redirect('/petdatabuku')->with('notifadd', 'Berhasil Menambahkan');
         }
     }
-    // update buku
+    // update buku individu
     public function upbuku(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1203,6 +1207,7 @@ class AdminController extends Controller
             'sinopsis' => 'regex:/^[a-zA-Z0-9\-]+$/',
             'ket' => 'regex:/^[a-zA-Z0-9\-]+$/',
             'photo' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'status' => 'required'
         ]);
 
         if ($request->role == "admin") {
@@ -1253,7 +1258,8 @@ class AdminController extends Controller
                 'tahun_terbit' => $request->tahun_terbit,
                 'sinopsis' => $request->sinopsis,
                 'photo' => $photo->hashName(),
-                'ket' => $request->ket
+                'ket' => $request->ket,
+                'status' => $request->status
             ]);
         } else {
             // update buku tanpa gambar
@@ -1275,7 +1281,8 @@ class AdminController extends Controller
                 'no_inv' => $request->no_inv,
                 'tahun_terbit' => $request->tahun_terbit,
                 'sinopsis' => $request->sinopsis,
-                'ket' => $request->ket
+                'ket' => $request->ket,
+                'status' => $request->status
 
             ]);
         }
@@ -1294,7 +1301,7 @@ class AdminController extends Controller
 
     // buku
 
-    // update buku
+    // update buku group
     public function upbukus(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1413,6 +1420,7 @@ class AdminController extends Controller
             'id_petugas' => 'required',
             'tgl_kembali' => 'required',
             'isbn' => 'required',
+            'nisn' => 'required'
         ]);
 
         if ($request->kondisi == 'admin') {
@@ -1448,15 +1456,6 @@ class AdminController extends Controller
         }
 
 
-        pengembalian::create([
-            'kode' => $request->kode,
-            'tgl_kembali' => $tglhariini,
-            'denda' => $dendatelat,
-            'qty' => $request->qtypinjam,
-            'keterangan' => 'Dikembalikan',
-            'id_petugas' => $request->id_petugas
-        ]);
-
         $data = pinjam::select('*')
             ->where('kode', '=', $request->kode)
             ->first();
@@ -1466,6 +1465,19 @@ class AdminController extends Controller
             ->where('status', '=', '0')
             ->take($request->qtykembali);
 
+        $anggota = anggota::select('*')
+            ->where('nisn', '=', $request->nisn)
+            ->first();
+
+        pengembalian::create([
+            'kode' => $request->kode,
+            'tgl_kembali' => $tglhariini,
+            'denda' => $dendatelat,
+            'qty' => $request->qtypinjam,
+            'keterangan' => 'Dikembalikan',
+            'id_petugas' => $request->id_petugas
+        ]);
+
         $data->update([
             'status' => 'dikembalikan'
         ]);
@@ -1473,6 +1485,11 @@ class AdminController extends Controller
         $datadetail->update([
             'status' => '1'
         ]);
+
+        $anggota->update([
+            'status' => '1'
+        ]);
+
 
 
         if ($request->kondisi == 'admin') {

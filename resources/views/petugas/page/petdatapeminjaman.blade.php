@@ -104,7 +104,7 @@
                                 <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
                                 <input type="hidden" name="id_petugas" value="{{ $peminjaman->petid }}">
                                 <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">
-                                <input type="hidden" name="id_anggota" value="{{ $peminjaman->agtid }}">
+                                <input type="hidden" name="id_anggota" value="{{ $peminjaman->nisn }}">
                                 <input type="hidden" name="peminjaman" value="{{ $peminjaman->tgl_pinjam }}">
                                 <input type="hidden" name="pengembalian" value="{{ $peminjaman->tgl_kembali }}">
                                 <input type="hidden" name="old_qty" value="0">

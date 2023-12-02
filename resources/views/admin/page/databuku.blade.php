@@ -227,7 +227,8 @@
                         <div class="col-12 col-sm-6">
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Tanggal</label>
-                                <input type="date" class="form-control" name="tanggal" required>
+                                <input type="date" class="form-control" name="tanggal"
+                                    value="{{ now()->format('Y-m-d') }}" required>
                             </div>
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">ISBN</label>
@@ -250,7 +251,7 @@
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Tahun Inventaris</label>
                                 <input type="number" class="form-control" id="thn_inv" name="thn_inv"
-                                    placeholder="Tahun Inventaris" required>
+                                    placeholder="Tahun Inventaris" value="{{ now()->year }}" required>
                             </div>
                             <div class="row mb-3">
                                 <label class="mb-2 fw-medium">Asal Buku</label>
@@ -288,7 +289,9 @@
                                     placeholder="Tahun Terbit" required id="thn_ter">
                             </div>
                             <div class="row mb-3">
-                                <label class="mb-2 fw-medium">Sinopsis</label>
+                                <label class="mb-2 fw-medium">Sinopsis <span class="text-danger">(*Beri Tanda - Jika
+                                        Tidak
+                                        Ada)</span></label>
                                 <textarea name="sinopsis" cols="30" rows="5" class="form-control"></textarea>
                             </div>
                             <div class="row mb-3">
@@ -339,7 +342,7 @@
                                 <div class="row mb-3">
                                     <label class="mb-2 fw-medium">Tanggal</label>
                                     <input type="date" class="form-control" name="tanggal" required
-                                        value="{{ $buku->tanggal }}">
+                                        value="{{ $buku->tgls }}">
                                 </div>
                                 <div class="row mb-3">
                                     <label class="mb-2 fw-medium">ISBN</label>
@@ -414,7 +417,9 @@
                                         value="{{ $buku->tahun_terbit }}">
                                 </div>
                                 <div class="row mb-3">
-                                    <label class="mb-2 fw-medium">Sinopsis</label>
+                                    <label class="mb-2 fw-medium">Sinopsis <span class="text-danger">(*Beri Tanda - Jika
+                                            Tidak
+                                            Ada)</span></label>
                                     <textarea name="sinopsis" cols="30" rows="5" class="form-control">{{ $buku->sinopsis }}</textarea>
                                 </div>
                                 <div class="row mb-3">
@@ -427,6 +432,18 @@
                                 <div class="row mb-3">
                                     <label class="mb-2 fw-medium">Foto</label>
                                     <input type="file" class="form-control" name="photo">
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="mb-2 fw-medium">Status</label>
+                                    <select name="status" class="form-control">
+                                        @if ($buku->status == 1)
+                                            <option value="1">Ada</option>
+                                            <option value="0">Dipinjam</option>
+                                        @else
+                                            <option value="0">Dipinjam</option>
+                                            <option value="1">Ada</option>
+                                        @endif
+                                    </select>
                                 </div>
                             </div>
                         </div>

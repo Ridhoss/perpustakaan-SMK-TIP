@@ -109,7 +109,7 @@
                             <select class="form-select" id="select_box" name="id_anggota">
                                 <option value="">Pilih Anggota</option>
                                 @foreach ($datanggota as $anggota)
-                                    <option value="{{ $anggota->id }}">{{ $anggota->nisn }} - {{ $anggota->name }}
+                                    <option value="{{ $anggota->nisn }}">{{ $anggota->nisn }} - {{ $anggota->name }}
                                     </option>
                                 @endforeach
                             </select>

@@ -148,6 +148,7 @@
                                         <th>No</th>
                                         <th>Kode Peminjaman</th>
                                         <th>Buku</th>
+                                        <th>NISN</th>
                                         <th>Peminjam</th>
                                         <th>Tanggal Pinjam</th>
                                         <th>Tanggal Kembali</th>
@@ -166,6 +167,7 @@
                                             {{-- <td>{!! DNS1D::getBarcodeHTML("$peminjaman->kode",'C39',1,50) !!}</td> --}}
                                             <td>{{ $peminjaman->kode }}</td>
                                             <td>{{ $peminjaman->judul }}</td>
+                                            <td>{{ $peminjaman->nisn }}</td>
                                             <td>{{ $peminjaman->anggota }}</td>
                                             <td>{{ $peminjaman->tgl_pinjam }}</td>
                                             <td>{{ $peminjaman->tgl_kembali }}</td>
@@ -175,19 +177,24 @@
                                                 <form action="/ubahstatuspeminjaman" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
-                                                    <input type="hidden" name="qtypinjam" value="{{ $peminjaman->qty }}">
+                                                    <input type="hidden" name="qtypinjam"
+                                                        value="{{ $peminjaman->qty }}">
                                                     <input type="hidden" name="id_petugas" value="{{ $user->id }}">
                                                     <input type="hidden" name="tgl_kembali"
                                                         value="{{ $peminjaman->tgl_kembali }}">
                                                     <input type="hidden" name="isbn"
                                                         value="{{ $peminjaman->isbn }}">
+                                                    <input type="hidden" name="nisn"
+                                                        value="{{ $peminjaman->nisn }}">
                                                     <input type="hidden" name="kondisi" value="petugas">
 
 
                                                     @if ($peminjaman->status == 'dipinjam')
-                                                        <button class="btn btn-primary btn-sm mb-2" type="submit">Kembali</button>
+                                                        <button class="btn btn-primary btn-sm mb-2"
+                                                            type="submit">Kembali</button>
                                                     @elseif($peminjaman->status == 'dihapus')
-                                                        <button class="btn btn-outline-danger btn-sm mb-2" type="submit">Pengembalian
+                                                        <button class="btn btn-outline-danger btn-sm mb-2"
+                                                            type="submit">Pengembalian
                                                             Dihapus</button>
                                                     @endif
                                                 </form>
