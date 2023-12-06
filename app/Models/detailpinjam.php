@@ -10,4 +10,9 @@ class detailpinjam extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function pinjams()
+    {
+        return $this->belongsTo(pinjam::class, 'kode', 'kode');
+    }
 }
