@@ -129,7 +129,7 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Member Role
+                Member Data
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->

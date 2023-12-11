@@ -109,7 +109,7 @@
                                 <input type="hidden" name="pengembalian" value="{{ $peminjaman->tgl_kembali }}">
                                 <input type="hidden" name="old_qty" value="0">
                                 <input type="hidden" name="qty" value="{{ $peminjaman->qty }}">
-                                <button class="btn btn-success btn-sm" type="submit">Print</button>
+                                <button class="btn btn-warning text-white btn-sm" type="submit">Print</button>
                             </form>
                         </td>
                         <td>

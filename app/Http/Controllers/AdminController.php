@@ -1578,7 +1578,7 @@ class AdminController extends Controller
             $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
                 ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
                 ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
                 ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
                 ->orderBy('pinjams.created_at', 'asc');
@@ -1603,7 +1603,7 @@ class AdminController extends Controller
             $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
                 ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
                 ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
                 ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
                 ->orderBy('pinjams.created_at', 'asc')
@@ -1615,7 +1615,7 @@ class AdminController extends Controller
             $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
                 ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
                 ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
                 ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
                 ->orderBy('pinjams.created_at', 'asc')
@@ -1623,7 +1623,7 @@ class AdminController extends Controller
 
             $st = pinjam::select('detailpinjams.tgl_pinjam')
                 ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->orderBy('tgl_pinjam', 'asc')
                 ->where('anggotas.name', '=', $username)
                 ->first();
@@ -1631,7 +1631,7 @@ class AdminController extends Controller
 
             $en = pinjam::select('detailpinjams.tgl_pinjam')
                 ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->orderBy('tgl_pinjam', 'asc')
                 ->where('anggotas.name', '=', $username)
                 ->first();
@@ -1647,7 +1647,7 @@ class AdminController extends Controller
             $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
                 ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
                 ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.id')
+                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
                 ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
                 ->orderBy('pinjams.created_at', 'asc')
