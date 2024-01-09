@@ -182,15 +182,15 @@ class AdminController extends Controller
     public function dashboard(PeminjamanChart $chart)
     {
 
-        $subquery = detailpinjam::select('id_buku', DB::raw('COUNT(id_buku) AS jumlah_sebelum_group'))
-            ->groupBy('id_buku');
+        $subquery = detailpinjam::select('isbn', DB::raw('COUNT(isbn) AS jumlah_sebelum_group'))
+        ->groupBy('isbn');
 
-        $bukularis = detailpinjam::select('detailpinjams.id_buku', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
+        $bukularis = detailpinjam::select('detailpinjams.isbn', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
             ->leftJoinSub($subquery, 'sub', function ($join) {
-                $join->on('detailpinjams.id_buku', '=', 'sub.id_buku');
+                $join->on('detailpinjams.isbn', '=', 'sub.isbn');
             })
-            ->join('bukus', 'detailpinjams.id_buku', '=', 'bukus.isbn')
-            ->groupBy('id_buku', 'judul', 'jumlah_sebelum_group')
+            ->join('bukus', 'detailpinjams.isbn', '=', 'bukus.isbn')
+            ->groupBy('isbn', 'judul', 'jumlah_sebelum_group')
             ->orderBy('jumlah', 'desc')
             ->take(5);
 
@@ -425,23 +425,44 @@ class AdminController extends Controller
     {
 
         if ($request->has('cari')) {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
-                ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
+            $datapeminjaman = pinjam::select(
+                'pinjams.kode',
+                'pinjams.id_anggota',
+                'pinjams.guru',
+                'pinjams.tgl_pinjam',
+                'pinjams.tgl_kembali',
+                'pinjams.id_petugas',
+                'pinjams.status',
+                'anggotas.name AS anggota',
+                'petugas.name AS petugas',
+                DB::raw('GROUP_CONCAT(detailpinjams.id_buku) AS id_buku_array'),
+                DB::raw('LENGTH(GROUP_CONCAT(detailpinjams.id_buku)) - LENGTH(REPLACE(GROUP_CONCAT(detailpinjams.id_buku), ",", "")) + 1 AS jumlah')
+            )
                 ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
-                ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-                ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'id_petugas', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'petid', 'tgl_kembali', 'petugas', 'qty', 'pinjams.status')
+                ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
+                ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas')
                 ->where('pinjams.kode', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('anggotas.name', 'LIKE', '%' . $request->cari . '%')
-                ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%')
-                ->OrWhere('bukus.judul', 'LIKE', '%' . $request->cari . '%');
+                ->OrWhere('anggotas.nisn', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
-                ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
+            $datapeminjaman = pinjam::select(
+                'pinjams.kode',
+                'pinjams.id_anggota',
+                'pinjams.guru',
+                'pinjams.tgl_pinjam',
+                'pinjams.tgl_kembali',
+                'pinjams.id_petugas',
+                'pinjams.status',
+                'anggotas.name AS anggota',
+                'petugas.name AS petugas',
+                DB::raw('GROUP_CONCAT(detailpinjams.id_buku) AS id_buku_array'),
+                DB::raw('LENGTH(GROUP_CONCAT(detailpinjams.id_buku)) - LENGTH(REPLACE(GROUP_CONCAT(detailpinjams.id_buku), ",", "")) + 1 AS jumlah')
+            )
                 ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
-                ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-                ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-                ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
+                ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
+                ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas');
         }
 
 
@@ -457,38 +478,23 @@ class AdminController extends Controller
     public function datapengembalian(Request $request)
     {
 
-        $datapeminjaman = pinjam::select('pinjams.id', 'pinjams.kode', 'bukus.isbn', 'bukus.judul', 'anggotas.name AS anggota', 'anggotas.id AS agtid', 'anggotas.nisn', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'petugas.id AS petid', 'petugas.name AS petugas', 'detailpinjams.qty AS qty', 'pinjams.status')
-            ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-            ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
-            ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-            ->join('petugas', 'petugas.id', '=', 'detailpinjams.id_petugas')
-            ->where('pinjams.status', 'dipinjam')
-            ->orWhere('pinjams.status', 'dihapus')
-            ->groupBy('id', 'pinjams.kode', 'judul', 'isbn', 'anggota', 'agtid', 'nisn', 'tgl_pinjam', 'tgl_kembali', 'petid', 'petugas', 'qty', 'pinjams.status');
-
-
         if ($request->has('cari')) {
-            $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
-                ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
-                ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
-                ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-                ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-                ->groupBy('pengembalians.id', 'isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas', 'kembaliwajib')
-                ->where('pengembalians.kode', 'LIKE', '%' . $request->cari . '%');
+            $datapengembalian = pengembalian::select('pengembalians.*', 'petugas.name AS petugas', 'anggotas.name AS anggota', 'pinjams.tgl_kembali AS tglwajib')
+                ->join('petugas', 'pengembalians.id_petugas', '=', 'petugas.id')
+                ->join('pinjams', 'pinjams.kode', '=', 'pengembalians.kode')
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
+                ->where('pengembalians.kode', 'LIKE', '%' . $request->cari . '%')
+                ->OrWhere('anggotas.name', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $datapengembalian = pengembalian::select('pengembalians.id', 'bukus.isbn AS isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas.name AS petugas', 'detailpinjams.tgl_kembali AS kembaliwajib')
-                ->join('petugas', 'petugas.id', '=', 'pengembalians.id_petugas')
-                ->join('pinjams', 'pengembalians.kode', '=', 'pinjams.kode')
-                ->join('bukus', 'bukus.isbn', '=', 'pinjams.id_buku')
-                ->join('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
-                ->groupBy('pengembalians.id', 'isbn', 'pengembalians.kode', 'pengembalians.tgl_kembali', 'pengembalians.denda', 'pengembalians.qty', 'pengembalians.keterangan', 'petugas', 'kembaliwajib');
+            $datapengembalian = pengembalian::select('pengembalians.*', 'petugas.name AS petugas', 'anggotas.name AS anggota', 'pinjams.tgl_kembali AS tglwajib')
+                ->join('petugas', 'pengembalians.id_petugas', '=', 'petugas.id')
+                ->join('pinjams', 'pinjams.kode', '=', 'pengembalians.kode')
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota');
         }
-
 
         return view('admin.page.datapengembalian', [
             'lastquery' => $request->cari,
             'datapengembalian' => $datapengembalian->get(),
-            'datapeminjaman' => $datapeminjaman->get(),
             'user' => Auth::user()
         ]);
     }
@@ -1418,7 +1424,7 @@ class AdminController extends Controller
 
 
     // peminjaman & pengembalian
-    
+
     // hapus peminjaman
     public function delpeminjaman(Request $request)
     {
@@ -1435,7 +1441,7 @@ class AdminController extends Controller
 
 
         $data->delete();
-        
+
         foreach ($datadetail as $detail) {
             $detail->delete();
         }
@@ -1450,40 +1456,6 @@ class AdminController extends Controller
             return redirect('/petdatapeminjaman')->with('notifhapus', 'Berhasil Menambahkan');
         }
     }
-
-    // hapus pengembalian
-    public function delpengembalian(Request $request)
-    {
-        $data = pengembalian::select('*')
-            ->where('kode', '=', $request->id)
-            ->first();
-
-        $data2 = pinjam::select('*')
-            ->where('kode', '=', $request->id)
-            ->first();
-
-        $datadetail = buku::select('*')
-            ->where('isbn', '=', $request->isbn)
-            ->where('status', '=', '1')
-            ->take($request->qtykembali);
-
-        $datadetail->update([
-            'status' => '0'
-        ]);
-
-        $data->delete();
-
-        $data2->update([
-            'status' => 'dihapus'
-        ]);
-
-        if ($request->kondisi == 'admin') {
-            return redirect('/pengembalian')->with('notifhapus', 'Berhasil Menambahkan');
-        } else {
-            return redirect('/petdatapengembalian')->with('notifhapus', 'Berhasil Menambahkan');
-        }
-    }
-
 
     // print
 
@@ -1502,21 +1474,29 @@ class AdminController extends Controller
 
         if ($validator->fails() && $validatorname->fails()) {
 
-            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
-                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
-                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
-                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+            $data = pinjam::select(
+                'pinjams.kode',
+                'pinjams.id_anggota',
+                'pinjams.guru',
+                'pinjams.tgl_pinjam',
+                'pinjams.tgl_kembali',
+                'pinjams.id_petugas',
+                'pinjams.status',
+                'anggotas.name AS anggota',
+                'petugas.name AS petugas',
+                'bukus.judul AS buku'
+            )
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
+                ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
+                ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
                 ->orderBy('pinjams.created_at', 'asc');
 
-            $st = pinjam::select('detailpinjams.tgl_pinjam')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+            $st = pinjam::select('pinjams.tgl_pinjam')
                 ->orderBy('tgl_pinjam', 'asc')
                 ->first();
 
-            $en = pinjam::select('detailpinjams.tgl_pinjam')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+            $en = pinjam::select('pinjams.tgl_pinjam')
                 ->orderBy('tgl_pinjam', 'desc')
                 ->first();
 
@@ -1527,37 +1507,55 @@ class AdminController extends Controller
             $start = $request->Start;
             $end = $request->End;
 
-            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
-                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
-                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
-                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+            $data = pinjam::select(
+                'pinjams.kode',
+                'pinjams.id_anggota',
+                'pinjams.guru',
+                'pinjams.tgl_pinjam',
+                'pinjams.tgl_kembali',
+                'pinjams.id_petugas',
+                'pinjams.status',
+                'anggotas.name AS anggota',
+                'petugas.name AS petugas',
+                'bukus.judul AS buku'
+            )
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
+                ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
+                ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
                 ->orderBy('pinjams.created_at', 'asc')
-                ->whereBetween('detailpinjams.tgl_pinjam', [$start, $end]);
+                ->whereBetween('pinjams.tgl_pinjam', [$start, $end]);
         } elseif ($validator->fails()) {
 
             $username = $request->username;
 
-            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
-                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
-                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
-                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+            $data = pinjam::select(
+                'pinjams.kode',
+                'pinjams.id_anggota',
+                'pinjams.guru',
+                'pinjams.tgl_pinjam',
+                'pinjams.tgl_kembali',
+                'pinjams.id_petugas',
+                'pinjams.status',
+                'anggotas.name AS anggota',
+                'petugas.name AS petugas',
+                'bukus.judul AS buku'
+            )
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
+                ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
+                ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->where('anggotas.name', '=', $username);
 
-            $st = pinjam::select('detailpinjams.tgl_pinjam')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+            $st = pinjam::select('pinjams.tgl_pinjam')
                 ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->orderBy('tgl_pinjam', 'asc')
                 ->where('anggotas.name', '=', $username)
                 ->first();
 
 
-            $en = pinjam::select('detailpinjams.tgl_pinjam')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
+            $en = pinjam::select('pinjams.tgl_pinjam')
                 ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
                 ->orderBy('tgl_pinjam', 'asc')
                 ->where('anggotas.name', '=', $username)
@@ -1571,15 +1569,25 @@ class AdminController extends Controller
             $start = $request->Start;
             $end = $request->End;
 
-            $data = pinjam::select('pinjams.kode AS kode', 'bukus.judul', 'pinjams.id_anggota', 'anggotas.name AS anggota', 'detailpinjams.tgl_pinjam', 'detailpinjams.tgl_kembali', 'detailpinjams.qty', 'detailpinjams.id_petugas', 'petugas.name AS petugas')
-                ->join('detailpinjams', 'pinjams.kode', '=', 'detailpinjams.kode')
-                ->join('petugas', 'detailpinjams.id_petugas', '=', 'petugas.id')
-                ->join('anggotas', 'pinjams.id_anggota', '=', 'anggotas.nisn')
-                ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
-                ->groupBy('kode', 'judul', 'id_anggota', 'anggota', 'tgl_pinjam', 'tgl_kembali', 'qty', 'id_petugas', 'petugas')
+            $data = pinjam::select(
+                'pinjams.kode',
+                'pinjams.id_anggota',
+                'pinjams.guru',
+                'pinjams.tgl_pinjam',
+                'pinjams.tgl_kembali',
+                'pinjams.id_petugas',
+                'pinjams.status',
+                'anggotas.name AS anggota',
+                'petugas.name AS petugas',
+                'bukus.judul AS buku'
+            )
+                ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
+                ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
+                ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
+                ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->where('anggotas.name', '=', $username)
-                ->whereBetween('detailpinjams.tgl_pinjam', [$start, $end]);
+                ->whereBetween('pinjams.tgl_pinjam', [$start, $end]);
         }
 
         return view('laporan.laporan-peminjaman', [

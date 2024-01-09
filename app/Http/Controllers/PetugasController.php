@@ -343,7 +343,6 @@ class PetugasController extends Controller
 
         return view('petugas.page.petdatapengembalian', [
             'lastquery' => $request->cari,
-            'lastquerymodal' => $request->searchpeminjaman,
             'datapengembalian' => $datapengembalian->get(),
             'user' => Auth::user()
         ]);
@@ -801,6 +800,12 @@ class PetugasController extends Controller
                 $go = "window.location='/petdatapeminjaman'";
             } else {
                 $go = "window.location='/petdatapengembalian'";
+            }
+        } else {
+            if ($where == 'petpeminjaman') {
+                $go = "window.location='/peminjaman'";
+            } else {
+                $go = "window.location='/pengembalian'";
             }
         }
 

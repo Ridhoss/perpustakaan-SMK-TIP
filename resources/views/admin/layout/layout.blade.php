@@ -73,7 +73,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item" id="dashboard">
                 <a class="nav-link" href="/dashboard">
                     <i class="fa-solid fa-chart-simple ms-1 me-1"></i>
                     <span>Dashboard</span></a>
@@ -88,7 +88,7 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item" id="data">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
@@ -97,14 +97,14 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Main Data:</h6>
-                        <a class="collapse-item" href="/peminjaman">Data Peminjaman</a>
-                        <a class="collapse-item" href="/pengembalian">Data Pengembalian</a>
+                        <a class="collapse-item" href="/peminjaman" id="peminjaman">Data Peminjaman</a>
+                        <a class="collapse-item" href="/pengembalian" id="pengembalian">Data Pengembalian</a>
                     </div>
                 </div>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item" id="maindata">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
@@ -114,12 +114,12 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Data Utilities:</h6>
-                        <a class="collapse-item" href="/bukus">Data Buku</a>
-                        <a class="collapse-item" href="/buku">Data Detail Buku</a>
-                        <a class="collapse-item" href="/kategori">Data Kategori</a>
-                        <a class="collapse-item" href="/asal">Data Asal Buku</a>
-                        <a class="collapse-item" href="/bahasa">Data Bahasa Buku</a>
-                        <a class="collapse-item" href="/anggota">Data Anggota</a>
+                        <a class="collapse-item" href="/bukus" id="buku">Data Buku</a>
+                        <a class="collapse-item" href="/buku" id="detail">Data Detail Buku</a>
+                        <a class="collapse-item" href="/kategori" id="kategori">Data Kategori</a>
+                        <a class="collapse-item" href="/asal" id="asal">Data Asal Buku</a>
+                        <a class="collapse-item" href="/bahasa" id="bahasa">Data Bahasa Buku</a>
+                        <a class="collapse-item" href="/anggota" id="anggota">Data Anggota</a>
                     </div>
                 </div>
             </li>
@@ -133,7 +133,7 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item" id="member">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
@@ -142,8 +142,8 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="/admin">Data Admin</a>
-                        <a class="collapse-item" href="/petugas">Data Petugas</a>
+                        <a class="collapse-item" href="/admin" id="admin">Data Admin</a>
+                        <a class="collapse-item" href="/petugas" id="petugas">Data Petugas</a>
                     </div>
                 </div>
             </li>

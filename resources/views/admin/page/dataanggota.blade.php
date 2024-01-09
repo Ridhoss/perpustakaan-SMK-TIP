@@ -373,4 +373,15 @@
             });
         });
     </script>
+
+    <script>
+        window.onload = function() {
+
+            var aktif = document.getElementById("maindata");
+            var active = document.getElementById("anggota");
+            aktif.classList.add('aktif');
+            active.classList.add('active');
+
+        };
+    </script>
 @endsection

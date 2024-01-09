@@ -165,4 +165,15 @@
             </div>
         </div>
     @endforeach
+
+    <script>
+        window.onload = function() {
+
+            var aktif = document.getElementById("maindata");
+            var active = document.getElementById("bahasa");
+            aktif.classList.add('aktif');
+            active.classList.add('active');
+
+        };
+    </script>
 @endsection

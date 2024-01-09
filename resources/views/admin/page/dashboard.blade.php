@@ -219,6 +219,16 @@
 
     </div>
 
+    <script>
+        window.onload = function() {
+
+            var aktif = document.getElementById("dashboard");
+
+            aktif.classList.add('aktif');
+
+        };
+    </script>
+
     <script src="{{ $chart->cdn() }}"></script>
 
     {{ $chart->script() }}

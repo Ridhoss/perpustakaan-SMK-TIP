@@ -108,11 +108,10 @@
                 <tr>
                     <th>No</th>
                     <th>Kode Peminjaman</th>
-                    <th>Buku</th>
                     <th>Peminjam</th>
                     <th>Tanggal Pinjam</th>
                     <th>Tanggal Kembali</th>
-                    <th>Jumlah Pinjam</th>
+                    <th>Jumlah Buku</th>
                     <th>Petugas</th>
                     <th>Status</th>
                     <th>Bukti</th>
@@ -128,11 +127,10 @@
                         <td>{{ $no++ }}</td>
                         {{-- <td>{!! DNS1D::getBarcodeHTML("$peminjaman->kode",'C39',1,50) !!}</td> --}}
                         <td>{{ $peminjaman->kode }}</td>
-                        <td>{{ $peminjaman->judul }}</td>
                         <td>{{ $peminjaman->anggota }}</td>
                         <td>{{ $peminjaman->tgl_pinjam }}</td>
                         <td>{{ $peminjaman->tgl_kembali }}</td>
-                        <td>{{ $peminjaman->qty }}</td>
+                        <td>{{ $peminjaman->jumlah }}</td>
                         <td>{{ $peminjaman->petugas }}</td>
                         <td>
                             @if ($peminjaman->status == 'dipinjam')
@@ -147,24 +145,17 @@
                             @endif
                         </td>
                         <td>
-                            <form action="/pinjambuku" method="POST">
+                            <form action="/printinvoice" method="GET">
                                 @csrf
-                                <input type="hidden" name="kondisi" value="print">
-                                <input type="hidden" name="role" value="admin">
                                 <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
-                                <input type="hidden" name="id_petugas" value="{{ $peminjaman->petid }}">
-                                <input type="hidden" name="isbn" value="{{ $peminjaman->isbn }}">
-                                <input type="hidden" name="id_anggota" value="{{ $peminjaman->nisn }}">
-                                <input type="hidden" name="peminjaman" value="{{ $peminjaman->tgl_pinjam }}">
-                                <input type="hidden" name="pengembalian" value="{{ $peminjaman->tgl_kembali }}">
-                                <input type="hidden" name="old_qty" value="0">
-                                <input type="hidden" name="qty" value="{{ $peminjaman->qty }}">
+                                <input type="hidden" name="role" value="admin">
+                                <input type="hidden" name="where" value="petpeminjaman">
                                 <button class="btn btn-warning text-white btn-sm" type="submit">Print</button>
                             </form>
                         </td>
                         <td>
                             <button class="btn btn-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
-                                data-bs-target="#hapus{{ $peminjaman->id }}">Hapus</button>
+                                data-bs-target="#hapus{{ $peminjaman->kode }}">Hapus</button>
                         </td>
                     </tr>
                 @endforeach
@@ -174,7 +165,7 @@
 
     <!-- Modal Hapus -->
     @foreach ($datapeminjaman as $peminjaman)
-        <div class="modal fade" id="hapus{{ $peminjaman->id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+        <div class="modal fade" id="hapus{{ $peminjaman->kode }}" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -258,5 +249,16 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        window.onload = function() {
+
+            var aktif = document.getElementById("data");
+            var active = document.getElementById("peminjaman");
+            aktif.classList.add('aktif');
+            active.classList.add('active');
+
+        };
     </script>
 @endsection

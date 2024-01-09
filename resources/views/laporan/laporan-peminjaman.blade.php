@@ -23,40 +23,38 @@
         <div class="row mt-5">
             <p>Date : {{ \Carbon\Carbon::createFromFormat('Y-m-d', $start)->format('d F Y') }} -
                 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $end)->format('d F Y') }} </p>
-            <table class="table text-center">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Kode Peminjaman</th>
-                        <th>Buku</th>
-                        <th>Peminjam</th>
-                        <th>Tanggal Pinjam</th>
-                        <th>Tanggal Kembali</th>
-                        <th>Jumlah Pinjam</th>
-                        <th>Petugas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php
-                        $no = 1;
-                    @endphp
-                    @foreach ($peminjamans as $pinjam)
+                <table class="table text-center">
+                    <thead>
                         <tr>
-                            <td>{{ $no++ }}</td>
-                            <td>{{ $pinjam->kode }}</td>
-                            <td>{{ $pinjam->judul }}</td>
-                            <td>{{ $pinjam->anggota }}</td>
-                            <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $pinjam->tgl_pinjam)->format('d-m-Y') }}
-                            </td>
-                            <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $pinjam->tgl_kembali)->format('d-m-Y') }}
-                            </td>
-                            <td>{{ $pinjam->qty }}</td>
-                            <td>{{ $pinjam->petugas }}</td>
+                            <th>No</th>
+                            <th>Kode Peminjaman</th>
+                            <th>Peminjam</th>
+                            <th>Buku</th>
+                            <th>Tanggal Pinjam</th>
+                            <th>Tanggal Kembali</th>
+                            <th>Jumlah Buku</th>
+                            <th>Petugas</th>
                         </tr>
-                    @endforeach
-                </tbody>
-
-            </table>
+                    </thead>
+                    <tbody>
+                        @php
+                            $no = 1;
+                        @endphp
+                        @foreach ($peminjamans as $peminjaman)
+                            <tr>
+                                <td>{{ $no++ }}</td>
+                                {{-- <td>{!! DNS1D::getBarcodeHTML("$peminjaman->kode",'C39',1,50) !!}</td> --}}
+                                <td>{{ $peminjaman->kode }}</td>
+                                <td>{{ $peminjaman->anggota }}</td>
+                                <td>{{ $peminjaman->buku }}</td>
+                                <td>{{ $peminjaman->tgl_pinjam }}</td>
+                                <td>{{ $peminjaman->tgl_kembali }}</td>
+                                <td>{{ $peminjaman->jumlah }}</td>
+                                <td>{{ $peminjaman->petugas }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
         </div>
     </div>
 

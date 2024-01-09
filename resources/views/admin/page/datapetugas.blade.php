@@ -451,4 +451,16 @@
             </div>
         </div>
     @endforeach
+
+    <script>
+        window.onload = function() {
+
+            var aktif = document.getElementById("member");
+            var active = document.getElementById("petugas");
+            aktif.classList.add('aktif');
+            active.classList.add('active');
+
+        };
+    </script>
+
 @endsection

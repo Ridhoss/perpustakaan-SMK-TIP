@@ -563,4 +563,15 @@
             }
         });
     </script>
+
+<script>
+    window.onload = function() {
+
+        var aktif = document.getElementById("maindata");
+        var active = document.getElementById("detail");
+        aktif.classList.add('aktif');
+        active.classList.add('active');
+
+    };
+</script>
 @endsection
