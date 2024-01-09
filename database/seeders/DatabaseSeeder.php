@@ -36,7 +36,8 @@ class DatabaseSeeder extends Seeder
             'gender' => 'L',
             'religion' => 'Islam',
             'date' => '2006-02-13',
-            'photo' => 'profile.png'
+            'photo' => 'profile.png',
+            'status' => 'superadmin'
         ]);
 
         $datakategori = [

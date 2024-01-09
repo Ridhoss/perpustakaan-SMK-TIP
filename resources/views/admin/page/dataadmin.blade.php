@@ -141,6 +141,7 @@
                     <th>Jenis Kelamin</th>
                     <th>Agama</th>
                     <th>Tanggal Lahir</th>
+                    <th>Status</th>
                     <th>Foto</th>
                     <th>Action</th>
                 </tr>
@@ -163,6 +164,7 @@
                         @endif
                         <td>{{ $admin->religion }}</td>
                         <td>{{ $admin->date }}</td>
+                        <td>{{ $admin->status }}</td>
                         <td><img src="{{ Storage::url('public/admin/' . $admin->photo) }}" width="100"
                                 class="rounded">
                         </td>
@@ -171,8 +173,10 @@
                                 data-bs-target="#edit{{ $admin->id }}">Edit</button>
                             <button class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal"
                                 data-bs-target="#password{{ $admin->id }}">Edit Password</button>
-                            <button class="btn btn-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
-                                data-bs-target="#hapus{{ $admin->id }}">Hapus</button>
+                            @if ($admin->status != 'superadmin')
+                                <button class="btn btn-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
+                                    data-bs-target="#hapus{{ $admin->id }}">Hapus</button>
+                            @endif
 
                             {{-- <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#action{{ $admin->id }}" aria-expanded="false"
@@ -220,7 +224,7 @@
                         </div>
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">Password</label>
-                            <input type="password" class="form-control" placeholder="Password" name="password" required>
+                            <input type="password" class="form-control" placeholder="Password Minimal 3" name="password" required>
                         </div>
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">Email</label>
@@ -257,6 +261,15 @@
                             <label class="mb-2 fw-medium">Foto</label>
                             <input type="file" class="form-control" name="photo" required>
                         </div>
+                        @if ($user->status == 'superadmin')
+                            <div class="row mb-3">
+                                <label class="mb-2 fw-medium">Status</label>
+                                <select name="status" class="form-control" required>
+                                    <option value="admin">Admin</option>
+                                    <option value="superadmin">Superadmin</option>
+                                </select>
+                            </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

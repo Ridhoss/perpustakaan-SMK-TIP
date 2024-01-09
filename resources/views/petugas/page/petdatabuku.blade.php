@@ -141,7 +141,7 @@
     <form action="/petdatabuku" method="get">
         <div class="d-flex justify-content-end mb-4">
             <input type="search" name="cari" class="cari form-control me-3" placeholder="Cari"
-                value="{{ $lastquery }}">
+                value="{{ $lastquery }}" id="cari">
             {{-- <button type="submit" class="btn btn-outline-secondary me-3">Cari</button> --}}
         </div>
     </form>
@@ -465,6 +465,23 @@
             </div>
         </div>
     @endforeach
+
+    <script>
+        window.onload = function() {
+            // Get the input element by its ID
+            var inputElement = document.getElementById("cari");
+
+            // Set focus to the input element when the page is loaded
+            inputElement.focus();
+
+            var aktif = document.getElementById("main-data");
+            var datgot = document.getElementById('datbuk')
+            aktif.classList.add('aktif');
+            datgot.classList.add('active');
+
+
+        };
+    </script>
 
     <script>
         const numberInput1 = document.getElementById('eks');

@@ -160,6 +160,16 @@
         </div>
     </div>
 
+    <script>
+        window.onload = function() {
+
+            var aktif = document.getElementById("dash");
+
+            aktif.classList.add('aktif');
+
+        };
+    </script>
+
     <script src="{{ $chart->cdn() }}"></script>
 
     {{ $chart->script() }}

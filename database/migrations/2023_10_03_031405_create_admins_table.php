@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('religion')->nullable();
             $table->date('date')->nullable();
             $table->string('photo')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

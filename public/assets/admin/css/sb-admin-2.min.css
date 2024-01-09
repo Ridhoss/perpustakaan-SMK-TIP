@@ -44,8 +44,8 @@
 
     /* color */
 
-    --primary: #002939;
-    --secondary: #ddc190;
+    --primaries: #002939;
+    --secondaries: #ddc190;
 
     /* font */
 
@@ -8821,8 +8821,8 @@ button.bg-dark:hover {
 .text-lowercase {
     text-transform: lowercase !important;
 }
-.sidebar{
-    background-color: var(--primary) !important;
+.sidebar {
+    background-color: var(--primaries) !important;
 }
 .dropdown .dropdown-menu .dropdown-header,
 .sidebar .sidebar-heading,
@@ -9341,7 +9341,7 @@ a:focus {
     height: 2rem;
     width: 2rem;
 }
-.img-profile{
+.img-profile {
     object-fit: cover;
 }
 .topbar {
@@ -9376,6 +9376,14 @@ a:focus {
     align-items: center;
     padding: 0 0.75rem;
 }
+
+.book i{
+    font-size: 20px !important;
+    margin-right: 5px !important;
+    margin-top: 5px !important;
+}
+
+
 .topbar .nav-item .nav-link:focus {
     outline: 0;
 }
@@ -9410,6 +9418,22 @@ a:focus {
     border-bottom: 1px solid #e3e6f0;
     line-height: 1.3rem;
 }
+
+.nav-item {
+    border-radius: 20px;
+    margin: 5px 5px;
+}
+
+.aktif {
+    background-color: var(--secondaries);
+    transition: 0.2s ease-in-out;
+}
+
+.aktif i, .aktif span {
+    color: var(--primaries) !important;
+    font-weight: bold;
+}
+
 .topbar .dropdown-list .dropdown-item .dropdown-list-image {
     position: relative;
     height: 2.5rem;

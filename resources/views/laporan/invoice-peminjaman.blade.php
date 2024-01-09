@@ -5,6 +5,9 @@
     <meta charset="utf-8" />
     <title>Bukti Peminjaman - TIP Literation</title>
 
+    {{-- logo atas --}}
+    <link rel="shortcut icon" type="image/png" href="assets/img/logo/buku.png" />
+
     <style>
         .invoice-box {
             max-width: 800px;
@@ -113,7 +116,8 @@
     </style>
 </head>
 
-<body onafterprint="{{ $role == 'admin' ? "window.location='/peminjaman'" : "window.location='/petdatapeminjaman'" }}">
+<body onafterprint="{{ $gowhere }}">
+
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
             <tr class="top">
@@ -148,12 +152,11 @@
                                 <br>Kota Cimahi, Jawa Barat 40531
                             </td>
 
-                            @foreach ($anggota as $user)
-                                <td>
-                                    <span class="bold">{{ $user->name }}</span>
-                                    <br><span class="bold">NIS : </span>{{ $user->nisn }}
-                                </td>
-                            @endforeach
+                            <td>
+                                <span class="bold">{{ $anggota }}</span>
+                                <br><span class="bold">NIS : </span> {{ $anggotanisn }}
+                                <br><span class="bold">GURU : </span> {{ $guru }}
+                            </td>
                         </tr>
                     </table>
                 </td>
@@ -177,21 +180,18 @@
                 <td>Qty</td>
             </tr>
 
-            <tr class="item">
-                @foreach ($buku as $bukus)
+            @foreach ($buku as $bukus)
+                <tr class="item">
                     <td>{{ $bukus->judul }}</td>
-                @endforeach
-
-                <td>{{ $qty }}</td>
-            </tr>
-
-            @foreach ($petugas as $pet)
-                <tr class="total">
-                    <td></td>
-
-                    <td>Petugas: {{ $pet->name }}</td>
+                    <td>{{ $bukus->qty }}</td>
                 </tr>
             @endforeach
+
+            <tr class="total">
+                <td></td>
+
+                <td>Petugas: {{ $petugas }}</td>
+            </tr>
         </table>
         <div class="">
             <p class="bold">Barcode : </p>

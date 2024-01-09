@@ -224,7 +224,7 @@
                         </div>
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">Password</label>
-                            <input type="password" class="form-control" placeholder="Password" name="password" required>
+                            <input type="password" class="form-control" placeholder="Password Minimal 5" name="password" required>
                         </div>
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">Email</label>

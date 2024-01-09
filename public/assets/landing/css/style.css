@@ -63,14 +63,17 @@ body::-webkit-scrollbar {
   color: var(--secondary) !important;
 }
 
-.icons-home i {
-  font-size: 1.8rem;
-  color: var(--secondary);
+.icons-home a {
+  font-size: 0.8rem;
+  background-color: var(--secondary) !important;
+  color: var(--primary) !important;
+  font-family: var(--headingfont) !important;
 }
 
-.icons-home i:hover{
-  color: #ffffff;
-  transition: 0.1s;
+.icons-home a:hover{
+  color: var(--primary) !important;
+  background-color: #fff !important;
+  transition: 0.5s;
 }
 
 /* home */
@@ -127,6 +130,7 @@ body::-webkit-scrollbar {
 
 .quote {
   color: var(--secondary);
+  font-size: 20px;
 }
 
 .banner1 {
@@ -232,7 +236,14 @@ body::-webkit-scrollbar {
 }
 
 .img-book {
-  width: 200px;
+  width: 150px !important;
+  height: 250px !important;
+  object-fit: cover !important;
+}
+
+.img-service img {
+  width: 140px;
+  height: 140px;
 }
 
 @media screen and (min-width: 768px) {
@@ -299,6 +310,16 @@ body::-webkit-scrollbar {
   }
 
   .img-book {
-    width: 180px;
+    width: 200px !important;
+    height: 300px !important;
+  }
+
+  .img-service img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .quote {
+    font-size: 30px;
   }
 }

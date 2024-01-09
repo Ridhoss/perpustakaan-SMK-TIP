@@ -46,7 +46,7 @@
 @section('content')
     <!-- Page Heading -->
     <div class="d-flex position-relative align-items-center justify-content-between p-4">
-        <h1 class="h3 mb-0 text-gray-800 font-primary">Peminjaman Buku</h1>
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Peminjaman Buku Guru</h1>
 
         {{-- alert --}}
         @error('id_petugas')
@@ -137,11 +137,14 @@
 
         <script>
             window.onload = function() {
-                // Get the input element by its ID
+                // focus cari
                 var inputElement = document.getElementById("cari");
-
-                // Set focus to the input element when the page is loaded
                 inputElement.focus();
+
+                var aktif = document.getElementById("pin-mak");
+
+                aktif.classList.add('aktif');
+
             };
         </script>
 

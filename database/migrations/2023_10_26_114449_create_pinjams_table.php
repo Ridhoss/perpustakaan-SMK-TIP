@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('pinjams', function (Blueprint $table) {
             $table->id();
             $table->string('kode');
-            $table->bigInteger('id_buku');
             $table->bigInteger('id_anggota');
+            $table->string('guru')->nullable();
+            $table->date('tgl_pinjam');
+            $table->date('tgl_kembali');
+            $table->bigInteger('id_petugas');
             $table->string('status');
             $table->timestamps();
         });

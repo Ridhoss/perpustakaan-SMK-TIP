@@ -145,45 +145,51 @@ class AdminController extends Controller
     public function landing()
     {
 
-        $databuku = buku::select(
-            'bukus.isbn',
-            'bukus.pengarang',
-            'bukus.judul',
-            'bukus.thn_inv',
-            DB::raw('COUNT(bukus.eks) AS jumlah'),
-            'bukus.asl_id',
-            'bukus.ktg_id',
-            'bukus.bhs_id',
-            'asals.name AS asal',
-            'kategoris.name AS kategori',
-            'bahasas.name AS bahasa',
-            'bukus.tahun_terbit',
-            'bukus.sinopsis',
-            'bukus.photo',
-            'bukus.ket'
-        )
-            ->join('asals', 'bukus.asl_id', '=', 'asals.id')
-            ->join('kategoris', 'bukus.ktg_id', '=', 'kategoris.id')
-            ->join('bahasas', 'bukus.bhs_id', '=', 'bahasas.id')
-            ->groupBy('bukus.tanggal', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asal', 'kategori', 'bahasa', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket');
+        if (Auth::guard('admin')->check()) {
+            return redirect('/dashboard');
+        } else if (Auth::guard('petugas')->check()) {
+            return redirect('/petdashboard');
+        } else {
+            $databuku = buku::select(
+                'bukus.isbn',
+                'bukus.pengarang',
+                'bukus.judul',
+                'bukus.thn_inv',
+                DB::raw('COUNT(bukus.eks) AS jumlah'),
+                'bukus.asl_id',
+                'bukus.ktg_id',
+                'bukus.bhs_id',
+                'asals.name AS asal',
+                'kategoris.name AS kategori',
+                'bahasas.name AS bahasa',
+                'bukus.tahun_terbit',
+                'bukus.sinopsis',
+                'bukus.photo',
+                'bukus.ket'
+            )
+                ->join('asals', 'bukus.asl_id', '=', 'asals.id')
+                ->join('kategoris', 'bukus.ktg_id', '=', 'kategoris.id')
+                ->join('bahasas', 'bukus.bhs_id', '=', 'bahasas.id')
+                ->groupBy('bukus.tanggal', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asal', 'kategori', 'bahasa', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket');
 
-        return view('landing', [
-            'bukus' => $databuku->get()
-        ]);
+            return view('landing', [
+                'bukus' => $databuku->get()
+            ]);
+        }
     }
 
     // ke halaman dashboard
     public function dashboard(PeminjamanChart $chart)
     {
 
-        $subquery = pinjam::select('id_buku', DB::raw('COUNT(id_buku) AS jumlah_sebelum_group'))
+        $subquery = detailpinjam::select('id_buku', DB::raw('COUNT(id_buku) AS jumlah_sebelum_group'))
             ->groupBy('id_buku');
 
-        $bukularis = pinjam::select('pinjams.id_buku', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
+        $bukularis = detailpinjam::select('detailpinjams.id_buku', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
             ->leftJoinSub($subquery, 'sub', function ($join) {
-                $join->on('pinjams.id_buku', '=', 'sub.id_buku');
+                $join->on('detailpinjams.id_buku', '=', 'sub.id_buku');
             })
-            ->join('bukus', 'pinjams.id_buku', '=', 'bukus.isbn')
+            ->join('bukus', 'detailpinjams.id_buku', '=', 'bukus.isbn')
             ->groupBy('id_buku', 'judul', 'jumlah_sebelum_group')
             ->orderBy('jumlah', 'desc')
             ->take(5);
@@ -838,7 +844,8 @@ class AdminController extends Controller
                 'gender' => $request->gender,
                 'religion' => $request->religion,
                 'date' => $request->date,
-                'photo' => $photo->hashName()
+                'photo' => $photo->hashName(),
+                'status' => 'admin'
             ]);
         } else {
             Admin::create([
@@ -850,7 +857,8 @@ class AdminController extends Controller
                 'gender' => $request->gender,
                 'religion' => $request->religion,
                 'date' => $request->date,
-                'photo' => 'profile.png'
+                'photo' => 'profile.png',
+                'status' => 'admin'
             ]);
         }
 
@@ -1410,94 +1418,7 @@ class AdminController extends Controller
 
 
     // peminjaman & pengembalian
-
-    // ubah status
-    public function ubahpeminjaman(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'kode' => 'required',
-            'qtypinjam' => 'required',
-            'id_petugas' => 'required',
-            'tgl_kembali' => 'required',
-            'isbn' => 'required',
-            'nisn' => 'required'
-        ]);
-
-        if ($request->kondisi == 'admin') {
-            if ($validator->fails()) {
-                return redirect('/peminjaman')
-                    ->withErrors($validator);
-            }
-        } else {
-            if ($validator->fails()) {
-                return redirect('/petdatapengembalian')
-                    ->withErrors($validator);
-            }
-        }
-
-
-
-        $tglkembali = Carbon::parse($request->tgl_kembali);
-        $tglhariini = Carbon::parse(date('Y-m-d'));
-
-        $denda_telat = 2000;
-
-        if ($tglhariini->isAfter($tglkembali)) {
-            $jarak = $tglkembali->diff($tglhariini);
-            $jarakhari = $jarak->d;
-        } else {
-            $jarakhari = 0;
-        }
-
-        $dendatelat = $denda_telat * $jarakhari;
-
-        if ($dendatelat > 100000) {
-            $dendatelat = 100000;
-        }
-
-
-        $data = pinjam::select('*')
-            ->where('kode', '=', $request->kode)
-            ->first();
-
-        $datadetail = buku::select('*')
-            ->where('isbn', '=', $request->isbn)
-            ->where('status', '=', '0')
-            ->take($request->qtykembali);
-
-        $anggota = anggota::select('*')
-            ->where('nisn', '=', $request->nisn)
-            ->first();
-
-        pengembalian::create([
-            'kode' => $request->kode,
-            'tgl_kembali' => $tglhariini,
-            'denda' => $dendatelat,
-            'qty' => $request->qtypinjam,
-            'keterangan' => 'Dikembalikan',
-            'id_petugas' => $request->id_petugas
-        ]);
-
-        $data->update([
-            'status' => 'dikembalikan'
-        ]);
-
-        $datadetail->update([
-            'status' => '1'
-        ]);
-
-        $anggota->update([
-            'status' => '1'
-        ]);
-
-
-
-        if ($request->kondisi == 'admin') {
-            return redirect('/pengembalian')->with('notifubah', 'Berhasil Menambahkan');
-        } else {
-            return redirect('/petdatapengembalian')->with('notifubah', 'Berhasil Menambahkan');
-        }
-    }
+    
     // hapus peminjaman
     public function delpeminjaman(Request $request)
     {
@@ -1506,24 +1427,30 @@ class AdminController extends Controller
             ->first();
         $datadetail = detailpinjam::select('*')
             ->where('kode', '=', $request->id)
-            ->first();
+            ->get();
         $datapengembalian = pengembalian::select('*')
             ->where('kode', '=', $request->id)
             ->first();
 
 
+
         $data->delete();
-        $datadetail->delete();
+        
+        foreach ($datadetail as $detail) {
+            $detail->delete();
+        }
+
         if ($datapengembalian != null) {
             $datapengembalian->delete();
         }
 
         if ($request->kondisi == 'admin') {
-            return redirect('/peminjaman')->with('notifubah', 'Berhasil Menambahkan');
+            return redirect('/peminjaman')->with('notifhapus', 'Berhasil Menambahkan');
         } else {
-            return redirect('/petdatapeminjaman')->with('notifubah', 'Berhasil Menambahkan');
+            return redirect('/petdatapeminjaman')->with('notifhapus', 'Berhasil Menambahkan');
         }
     }
+
     // hapus pengembalian
     public function delpengembalian(Request $request)
     {

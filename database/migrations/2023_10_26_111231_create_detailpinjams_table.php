@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('detailpinjams', function (Blueprint $table) {
             $table->id();
             $table->string('kode');
-            $table->date('tgl_pinjam');
-            $table->date('tgl_kembali');
-            $table->bigInteger('id_petugas');
+            $table->bigInteger('id_buku');
+            $table->bigInteger('isbn');
             $table->bigInteger('qty');
             $table->timestamps();
         });

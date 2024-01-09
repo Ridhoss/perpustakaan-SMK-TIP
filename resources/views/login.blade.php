@@ -92,7 +92,7 @@
                     </div> -->
 
                             <div class="forgot mt-2">
-                                <a href="#">Forgot Password?</a>
+                                {{-- <a href="#">Forgot Password?</a> --}}
                             </div>
 
                         </div>

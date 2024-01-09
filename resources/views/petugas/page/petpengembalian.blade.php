@@ -21,7 +21,7 @@
 @section('content')
     {{-- header --}}
     <div class="d-flex position-relative align-items-center justify-content-between p-4">
-        <h1 class="h3 mb-0 text-gray-800 font-primary">Data Peminjaman</h1>
+        <h1 class="h3 mb-0 text-gray-800 font-primary">Pengembalian</h1>
 
         {{-- alerts --}}
 
@@ -44,10 +44,10 @@
     </div>
 
     {{-- cari --}}
-    <form action="/petdatapeminjaman" method="get">
+    <form action="/petpengembalian" method="get">
         <div class="d-flex justify-content-end mb-4">
             <input type="search" name="cari" class="cari form-control me-3" placeholder="Cari"
-                value="{{ $lastquery }}">
+                value="{{ $lastquery }}" id="cari">
             {{-- <button type="submit" class="btn btn-outline-secondary me-3">Cari</button> --}}
         </div>
     </form>
@@ -63,8 +63,6 @@
                     <th>Tanggal Kembali</th>
                     <th>Jumlah Buku</th>
                     <th>Petugas</th>
-                    <th>Status</th>
-                    <th>Bukti</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -83,29 +81,11 @@
                         <td>{{ $peminjaman->jumlah }}</td>
                         <td>{{ $peminjaman->petugas }}</td>
                         <td>
-                            @if ($peminjaman->status == 'dipinjam')
-                                <button class="btn btn-outline-secondary btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dipinjam</button>
-                            @elseif($peminjaman->status == 'dikembalikan')
-                                <button class="btn btn-outline-success btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Dikembalikan</button>
-                            @elseif($peminjaman->status == 'dihapus')
-                                <button class="btn btn-outline-danger btn-sm mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#kembali{{ $peminjaman->id }}" disabled>Pengembalian Dihapus</button>
-                            @endif
-                        </td>
-                        <td>
-                            <form action="/printinvoice" method="GET">
+                            <form action="/petdetailpengembalian" method="POST">
                                 @csrf
                                 <input type="hidden" name="kode" value="{{ $peminjaman->kode }}">
-                                <input type="hidden" name="role" value="petugas">
-                                <input type="hidden" name="where" value="petpeminjaman">
-                                <button class="btn btn-warning text-white btn-sm" type="submit">Print</button>
+                                <button class="btn btn-primary text-white btn-sm" type="submit">Kembalikan</button>
                             </form>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
-                                data-bs-target="#hapus{{ $peminjaman->kode }}">Hapus</button>
                         </td>
                     </tr>
                 @endforeach
@@ -113,38 +93,15 @@
         </table>
     </div>
 
-    <!-- Modal Hapus -->
-    @foreach ($datapeminjaman as $peminjaman)
-        <div class="modal fade" id="hapus{{ $peminjaman->kode }}" data-bs-backdrop="static" data-bs-keyboard="false"
-            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Hapus Peminjaman {{ $peminjaman->kode }}
-                        </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form action="/hapuspeminjaman" method="POST">
-                        @csrf
-                        <input type="hidden" name="kondisi" value="petugas">
-                        <input type="hidden" name="id" value="{{ $peminjaman->kode }}">
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-danger">Hapus</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endforeach
-
     <script>
         window.onload = function() {
 
-            var aktif = document.getElementById("data");
-            var datgot = document.getElementById('datpin')
+            // focus cari
+            var inputElement = document.getElementById("cari");
+            inputElement.focus();
+
+            var aktif = document.getElementById("pengem");
             aktif.classList.add('aktif');
-            datgot.classList.add('active');
 
         };
     </script>

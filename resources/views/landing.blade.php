@@ -46,7 +46,7 @@
                     <a class="nav-link me-4 link-atas" href="#product">Book</a>
                 </div>
                 <div class="icons-home mt-4 mt-lg-0">
-                    <a href="/login"><i class="fa-solid fa-right-to-bracket ms-3 mt-1"></i></a>
+                    <a href="/login" class="sign btn text-white">Sign In</a>
                 </div>
             </div>
         </div>
@@ -164,8 +164,7 @@
                                 <div class="swiper-slide card-product">
                                     <div
                                         class="img-box rounded-3 d-flex justify-content-center align-items-center py-4 px-2">
-                                        <img src="{{ Storage::url('public/buku/' . $buku->photo) }}" alt=""
-                                            class="img-fluid img-book" />
+                                        <img src="{{ Storage::url('public/buku/' . $buku->photo) }}" alt="" class="img-book" />
                                     </div>
                                     <div class="detail-product mt-3 d-flex justify-content-between">
                                         <div class="info">

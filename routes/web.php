@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PetugasController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,12 +30,25 @@ Route::get('/', [AdminController::class, 'landing'])->middleware('guest');
 
 // Halaman login 
 Route::get('/login', function () {
-    return view('login');
+
+    if (Auth::guard('admin')->check()) {
+        return redirect('/dashboard');
+    } else if (Auth::guard('petugas')->check()) {
+        return redirect('/petdashboard');
+    } else {
+        return view('login');
+    }
 })->name('login')->middleware('guest');
 
 // Halaman register 
 Route::get('/register', function () {
-    return view('register');
+    if (Auth::guard('admin')->check()) {
+        return redirect('/dashboard');
+    } else if (Auth::guard('petugas')->check()) {
+        return redirect('/petdashboard');
+    } else {
+        return view('register');
+    }
 })->middleware('guest');
 
 
@@ -81,7 +95,7 @@ Route::get('/pengembalian', [AdminController::class, 'datapengembalian'])->middl
 
 // ke dashboard
 Route::get('/petdashboard', [PetugasController::class, 'dashboard'])->middleware('auth:petugas');
-// ke halaman peminjaman
+// ke halaman peminjaman jamak
 Route::get('/petpeminjaman', [PetugasController::class, 'peminjaman'])->middleware('auth:petugas');
 // ke halaman peminjaman detail
 Route::get('/petpeminjamandetail', [PetugasController::class, 'peminjamandetail'])->middleware('auth:petugas');
@@ -93,6 +107,14 @@ Route::get('/petdatapengembalian', [PetugasController::class, 'datapengembalian'
 Route::get('/petdatabuku', [PetugasController::class, 'databuku'])->middleware('auth:petugas');
 // ke data pet anggota
 Route::get('/petdataanggota', [PetugasController::class, 'dataanggota'])->middleware('auth:petugas');
+// ke halaman peminjaman tunggal
+Route::get('/petpeminjamansiswa', [PetugasController::class, 'peminjamantunggal'])->middleware('auth:petugas');
+// ke detail pinjam buku siswa
+Route::post('/detailpinjambukusiswa', [PetugasController::class, 'detpeminjamansis'])->middleware('auth:petugas');
+// ke halaman pengembalian
+Route::get('/petpengembalian', [PetugasController::class, 'pengembalian'])->middleware('auth:petugas');
+// ke halaman detail pengembalian
+Route::post('/petdetailpengembalian', [PetugasController::class, 'detailpengembalian'])->middleware('auth:petugas');
 
 
 
@@ -181,8 +203,10 @@ Route::post('/hapusbukus', [AdminController::class, 'delbukus']);
 
 // aksi pinjam buku
 Route::post('/pinjambuku', [PetugasController::class, 'addpeminjaman']);
+// // aksi pinjam buku siswa
+Route::post('/pinjambukusiswa', [PetugasController::class, 'addpeminjamansiswa']);
 // ubah status (admin)
-Route::post('/ubahstatuspeminjaman', [AdminController::class, 'ubahpeminjaman']);
+Route::post('/pengembalianbuku', [PetugasController::class, 'pengembalianbuku']);
 // hapus peminjaman (admin)
 Route::post('/hapuspeminjaman', [AdminController::class, 'delpeminjaman']);
 // hapus pengembalian (admin)
@@ -192,6 +216,9 @@ Route::post('/hapuspengembalian', [AdminController::class, 'delpengembalian']);
 // print
 
 // print kartu anggota
+Route::get('/printinvoice', [PetugasController::class, 'printinvoice']);
+
+// print kartu anggota
 Route::post('/printanggota', [PetugasController::class, 'printanggota']);
 
 // print laporan peminjaman
@@ -199,5 +226,3 @@ Route::post('/printlaporan', [AdminController::class, 'printlaporan']);
 
 // print laporan buku
 Route::post('/printlaporanbuku', [AdminController::class, 'printlaporanbuku']);
-
-

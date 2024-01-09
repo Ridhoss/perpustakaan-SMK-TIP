@@ -70,6 +70,7 @@
                 <div class="right-body p-4">
                     @php
                         $today = date('Y-m-d');
+                        $besok = date('Y-m-d', strtotime('+1 day'));
                         $todays = date('Ymd');
 
                         foreach ($datbuku as $buku) {
@@ -82,11 +83,8 @@
                     <form action="/pinjambuku" method="POST">
                         @csrf
                         <input type="hidden" name="id_petugas" value="{{ $user->id }}">
-                        <input type="hidden" name="old_qty" value="{{ $oldqty }}">
                         <input type="hidden" name="isbn" value="{{ $idbuku }}">
                         <input type="hidden" name="kode" value="{{ $custom }}">
-                        <input type="hidden" name="kondisi" value="peminjaman">
-                        <input type="hidden" name="role" value="petugas">
                         <div class="row mb-2 px-2">
                             <label class="mb-2 fw-medium">Kode Peminjaman</label>
                             <input type="text" class="form-control text-center" placeholder="Kode" name=""
@@ -97,6 +95,10 @@
                             @foreach ($datbuku as $buku)
                                 @php
                                     $stok = $buku->jumlah;
+
+                                    if ($stok > 30) {
+                                        $stok = 30;
+                                    }
                                 @endphp
 
                                 <input type="text" class="form-control text-center" placeholder="buku" name=""
@@ -115,19 +117,24 @@
                             </select>
                         </div>
                         <div class="row mb-2 px-2">
+                            <label class="mb-2 fw-medium">Guru</label>
+                            <input type="text" class="form-control text-center" name="guru"
+                                placeholder="Nama Guru Yang Bertanggung Jawab" required>
+                        </div>
+                        <div class="row mb-2 px-2">
                             <label class="mb-2 fw-medium">Tanggal Peminjaman</label>
                             <input type="date" class="form-control text-center" name="peminjaman"
-                                value="{{ $today }}" min="{{ $today }}" required>
+                                value="{{ $today }}" min="{{ $today }}" required readonly>
                         </div>
                         <div class="row mb-2 px-2">
                             <label class="mb-2 fw-medium">Tanggal Pengembalian</label>
                             <input type="date" class="form-control text-center" name="pengembalian"
-                                min="{{ $today }}" required>
+                                min="{{ $besok }}" required>
                         </div>
                         <div class="row mb-2 px-2">
                             <label class="mb-2 fw-medium">Jumlah Buku</label>
                             <input type="number" class="form-control text-center" name="qty"
-                                placeholder="Jumlah Buku Yang Akan Dipinjam, Maximal {{ $buku->jumlah }}" min="1"
+                                placeholder="Jumlah Buku Yang Akan Dipinjam, Maximal {{ $stok }}" min="1"
                                 max="{{ $stok }}" id="jml" required>
                         </div>
                         <div class="d-flex justify-content-end mt-4">
@@ -158,4 +165,13 @@
             }
         });
     </script>
+
+<script>
+    window.onload = function() {
+        var aktif = document.getElementById("pin-mak");
+
+        aktif.classList.add('aktif');
+
+    };
+</script>
 @endsection

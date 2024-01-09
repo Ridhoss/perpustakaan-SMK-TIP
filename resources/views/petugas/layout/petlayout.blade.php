@@ -75,16 +75,10 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item" id="dash">
                 <a class="nav-link" href="/petdashboard">
                     <i class="fa-solid fa-chart-simple ms-1 me-1"></i>
                     <span>Dashboard</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="/petpeminjaman">
-                    <i class="fa-solid fa-bookmark ms-1 me-1"></i>
-                    <span>Peminjaman</span></a>
             </li>
 
             <!-- Divider -->
@@ -92,11 +86,37 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                User
+                Peminjaman & Pengembalian
+            </div>
+
+            <li class="nav-item" id="pin-tung">
+                <a class="nav-link" href="/petpeminjamansiswa">
+                    <i class="fa-solid fa-book ms-1 me-1"></i>
+                    <span>Peminjaman Siswa</span></a>
+            </li>
+
+            <li class="nav-item" id="pin-mak">
+                <a class="nav-link" href="/petpeminjaman">
+                    <i class="fa-solid fa-bookmark ms-1 me-1"></i>
+                    <span>Peminjaman Guru</span></a>
+            </li>
+
+            <li class="nav-item" id="pengem">
+                <a class="nav-link" href="/petpengembalian">
+                    <i class="fa-solid fa-inbox ms-1 me-1"></i>
+                    <span>Pengembalian</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Data
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item" id="data">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
@@ -104,15 +124,15 @@
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Main Data:</h6>
-                        <a class="collapse-item" href="/petdatapeminjaman">Data Peminjaman</a>
-                        <a class="collapse-item" href="/petdatapengembalian">Data Pengembalian</a>
+                        <h6 class="collapse-header">Data:</h6>
+                        <a class="collapse-item" id="datpin" href="/petdatapeminjaman">Data Peminjaman</a>
+                        <a class="collapse-item" id="datpeng" href="/petdatapengembalian">Data Pengembalian</a>
                     </div>
                 </div>
             </li>
 
             <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item" id="main-data">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
@@ -121,9 +141,9 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Data Utilities:</h6>
-                        <a class="collapse-item" href="/petdatabuku">Data Buku</a>
-                        <a class="collapse-item" href="/petdataanggota">Data Anggota</a>
+                        <h6 class="collapse-header">Main Data:</h6>
+                        <a class="collapse-item" id="datbuk" href="/petdatabuku">Data Buku</a>
+                        <a class="collapse-item" id="datgot" href="/petdataanggota">Data Anggota</a>
                     </div>
                 </div>
             </li>
