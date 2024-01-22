@@ -15,6 +15,7 @@ use App\Models\pengarang;
 use App\Models\pengembalian;
 use App\Models\petugas;
 use App\Models\pinjam;
+use App\Models\rak;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -183,7 +184,7 @@ class AdminController extends Controller
     {
 
         $subquery = detailpinjam::select('isbn', DB::raw('COUNT(isbn) AS jumlah_sebelum_group'))
-        ->groupBy('isbn');
+            ->groupBy('isbn');
 
         $bukularis = detailpinjam::select('detailpinjams.isbn', 'bukus.judul', DB::raw('COALESCE(sub.jumlah_sebelum_group, 0) AS jumlah'))
             ->leftJoinSub($subquery, 'sub', function ($join) {
@@ -324,19 +325,21 @@ class AdminController extends Controller
     {
 
         if ($request->has('cari')) {
-            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.tanggal AS tgls', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.tanggal AS tgls', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status', 'raks.nama AS rak')
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
                 ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id')
+                ->join('raks','raks.id','=','bukus.rak')
                 ->where('judul', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('isbn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('pengarang', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('no_inv', 'LIKE', '%' . $request->cari . '%');
         } else {
-            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.tanggal AS tgls', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+            $databuku = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.tanggal AS tgls', 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status', 'raks.nama as rak')
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
-                ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id');
+                ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id')
+                ->join('raks','raks.id','=','bukus.rak');
         }
 
         $datakat = kategori::all();
@@ -495,6 +498,24 @@ class AdminController extends Controller
         return view('admin.page.datapengembalian', [
             'lastquery' => $request->cari,
             'datapengembalian' => $datapengembalian->get(),
+            'user' => Auth::user()
+        ]);
+    }
+
+    // ke halaman data rak
+    public function datarak(Request $request)
+    {
+
+        if ($request->has('cari')) {
+            $datarak = rak::select('*')
+                ->where('raks.nama', 'LIKE', '%' . $request->cari . '%');
+        } else {
+            $datarak = rak::select('*');
+        }
+
+        return view('admin.page.datarak', [
+            'datarak' => $datarak->get(),
+            'lastquery' => $request->cari,
             'user' => Auth::user()
         ]);
     }
@@ -1165,8 +1186,10 @@ class AdminController extends Controller
             $namafoto = "default.png";
         }
 
+
         $jml = $request->jumlah;
 
+        // no inv
         $lastBook = buku::latest('no_inv')->first();
 
         $start = 1;
@@ -1176,7 +1199,17 @@ class AdminController extends Controller
             $start = $noAkhir + 1;
         }
 
+        $racks = rak::all();
+
         for ($i = $start; $i < $start + $jml; $i++) {
+
+            $selectedRack = $racks->first(function ($rack) {
+                return $rack->kapasitas_tersedia > 0;
+            });
+
+            if (!$selectedRack) {
+                break;
+            }
 
             buku::create([
                 'tanggal' => $request->tanggal,
@@ -1193,9 +1226,14 @@ class AdminController extends Controller
                 'sinopsis' => $request->sinopsis,
                 'photo' => $namafoto,
                 'ket' => $request->ket,
+                'rak' => $selectedRack->id,
                 'status' => '1'
+
             ]);
+
+            $selectedRack->decrement('kapasitas_tersedia');
         }
+
 
         if ($request->role == "admin") {
             return redirect('/buku')->with('notifadd', 'Berhasil Menambahkan');
@@ -1308,7 +1346,19 @@ class AdminController extends Controller
     {
         $data = buku::find($request->id);
 
-        $data->delete();
+        if ($data) {
+            $rak = rak::where('id', $data->rak)->first();
+
+            if ($rak) {
+                $data->delete();
+
+                $rak->increment('kapasitas_tersedia');
+            } else {
+                dd($rak);
+            }
+        } else {
+            dd($data);
+        }
 
         return redirect('/buku')->with('notifhapus', 'Berhasil Menambahkan');
     }
@@ -1411,9 +1461,23 @@ class AdminController extends Controller
     public function delbukus(Request $request)
     {
         $data = buku::select('*')
-            ->where('isbn', '=', $request->id);
+            ->where('isbn', '=', $request->id)->get();
 
-        $data->delete();
+        if ($data->isNotEmpty()) {
+
+            foreach ($data as $buku) {
+                $rak = rak::where('id', $buku->rak)->first();
+                if ($rak) {
+                    $rak->increment('kapasitas_tersedia');
+                } else {
+                }
+            }
+
+            $data2 = buku::select('*')
+                ->where('isbn', '=', $request->id);
+            $data2->delete();
+        } else {
+        }
 
         if ($request->role == "admin") {
             return redirect('/bukus')->with('notifhapus', 'Berhasil Menambahkan');
@@ -1421,6 +1485,84 @@ class AdminController extends Controller
             return redirect('/petdatabuku')->with('notifhapus', 'Berhasil Menambahkan');
         }
     }
+
+    // rak
+
+    // tambah rak buku
+    public function addrak(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|unique:raks',
+            'kapasitas' => 'required|numeric',
+            'keterangan' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/rak')
+                ->withErrors($validator);
+        }
+
+        rak::create([
+            'nama' => $request->nama,
+            'kapasitas' => $request->kapasitas,
+            'kapasitas_tersedia' => $request->kapasitas,
+            'keterangan' => $request->keterangan
+        ]);
+
+        return redirect('/rak')->with('notifadd', 'Berhasil Menambahkan');
+    }
+
+    // update rak buku
+    public function uprak(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required',
+            'new_kaps' => 'required|numeric',
+            'old_kaps' => 'required|numeric',
+            'tersedia' => 'required',
+            'keterangan' => 'required'
+        ]);
+
+
+        if ($validator->fails()) {
+            return redirect('/rak')
+                ->withErrors($validator);
+        }
+
+        $bukuinrak = buku::select('*')
+            ->where('rak', $request->id)
+            ->count();
+
+        if ($request->new_kaps < $bukuinrak) {
+            return redirect('/rak')->with('notifterdapatbuku', 'Berhasil Menambahkan');
+        } else {
+            $kapasitas = $request->new_kaps;
+            $tersedia = $request->new_kaps - $bukuinrak;
+        }
+
+
+        $rak = rak::find($request->id);
+
+        $rak->update([
+            'nama' => $request->nama,
+            'kapasitas' => $kapasitas,
+            'kapasitas_tersedia' => $tersedia,
+            'keterangan' => $request->keterangan
+        ]);
+
+        return redirect('/rak')->with('notifupdate', 'Berhasil Menambahkan');
+    }
+
+    // delete rak buku
+    public function delrak(Request $request)
+    {
+        $rak = rak::find($request->id);
+
+        $rak->delete();
+
+        return redirect('/rak')->with('notifhapus', 'Berhasil Menambahkan');
+    }
+
 
 
     // peminjaman & pengembalian
@@ -1608,7 +1750,7 @@ class AdminController extends Controller
 
         if ($validator->fails()) {
 
-            $data = buku::select('bukus.id', DB::raw("DATE_FORMAT(bukus.tanggal, '%d %M %Y') AS tanggal"), 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
+            $data = buku::select('bukus.id', DB::raw("bukus.tanggal"), 'bukus.isbn', 'bukus.pengarang', 'bukus.judul', 'bukus.eks', 'bukus.thn_inv', 'asals.name AS asal', 'kategoris.name AS kategori', 'bahasas.name AS bahasa', 'bukus.no_inv', 'bukus.asl_id', 'bukus.ktg_id', 'bukus.bhs_id', 'bukus.tahun_terbit', 'bukus.sinopsis', 'bukus.photo', 'bukus.ket', 'bukus.status')
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
                 ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id');

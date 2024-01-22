@@ -89,6 +89,8 @@ Route::get('/petugas', [AdminController::class, 'datapetugas'])->middleware('aut
 Route::get('/peminjaman', [AdminController::class, 'datapeminjaman'])->middleware('auth:admin');
 // ke data pengembalian
 Route::get('/pengembalian', [AdminController::class, 'datapengembalian'])->middleware('auth:admin');
+// ke data rak
+Route::get('/rak', [AdminController::class, 'datarak'])->middleware('auth:admin');
 
 
 // petugas
@@ -194,6 +196,14 @@ Route::post('/updatebukus', [AdminController::class, 'upbukus']);
 // hapus buku
 Route::post('/hapusbukus', [AdminController::class, 'delbukus']);
 
+// rak
+
+// tambah rak buku
+Route::post('/addrak', [AdminController::class, 'addrak']);
+// edit rak buku
+Route::post('/uprak', [AdminController::class, 'uprak']);
+// hapus rak buku
+Route::post('/delrak', [AdminController::class, 'delrak']);
 
 
 

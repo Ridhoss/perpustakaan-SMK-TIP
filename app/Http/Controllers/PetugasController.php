@@ -795,19 +795,24 @@ class PetugasController extends Controller
 
         // mengalihkan halaman after print
 
-        if ($role == 'petugas') {
-            if ($where == 'petpeminjaman') {
-                $go = "window.location='/petdatapeminjaman'";
+        if ($request->where != null) {
+            if ($role == 'petugas') {
+                if ($where == 'petpeminjaman') {
+                    $go = "window.location='/petdatapeminjaman'";
+                } else {
+                    $go = "window.location='/petdatapengembalian'";
+                }
             } else {
-                $go = "window.location='/petdatapengembalian'";
+                if ($where == 'petpeminjaman') {
+                    $go = "window.location='/peminjaman'";
+                } else {
+                    $go = "window.location='/pengembalian'";
+                }
             }
         } else {
-            if ($where == 'petpeminjaman') {
-                $go = "window.location='/peminjaman'";
-            } else {
-                $go = "window.location='/pengembalian'";
-            }
+            $go = "window.location='/petdatapeminjaman'";
         }
+
 
         // query ke halaman invoice
 

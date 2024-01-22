@@ -28,7 +28,7 @@
         @endif
         @if (session()->has('notifupdate'))
             <div class="alert alert-success alert-dismissible fade show position-absolute top-0 end-0" role="alert">
-                <strong>Data Successfully!</strong> Kategori Berhasil Di Update!
+                <strong>Data Successfully!</strong> Kategori Berhasil Di Ubah!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -102,7 +102,7 @@
                     <div class="modal-body p-4">
                         <div class="row">
                             <label class="mb-2 fw-medium">Nama Kategori</label>
-                            <input type="text" class="form-control" placeholder="Kategori" name="name">
+                            <input type="text" class="form-control" placeholder="Kategori" name="name" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -131,7 +131,7 @@
                             <div class="row">
                                 <label class="mb-2 fw-medium">Nama Kategori</label>
                                 <input type="text" class="form-control" placeholder="Kategori" name="name"
-                                    value="{{ $kategori->name }}">
+                                    value="{{ $kategori->name }}" required>
                             </div>
                         </div>
                         <div class="modal-footer">

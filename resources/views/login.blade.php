@@ -108,7 +108,7 @@
                 </div> -->
 
                     <div class="row">
-                        <p>Don't have account ? <a href="/register">Sign Up</a></p>
+                        {{-- <p>Don't have account ? <a href="/register">Sign Up</a></p> --}}
                     </div>
                 </div>
             </div>

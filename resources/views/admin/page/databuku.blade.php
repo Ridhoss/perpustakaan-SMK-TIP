@@ -165,6 +165,7 @@
                     <th>Tahun Terbit</th>
                     <th>Keterangan</th>
                     <th>Sinopsis</th>
+                    <th>Rak</th>
                     <th>Status</th>
                     <th>Gambar</th>
                     <th>Action</th>
@@ -190,6 +191,7 @@
                         <td>{{ $buku->tahun_terbit }}</td>
                         <td>{{ $buku->ket }}</td>
                         <td>{{ $buku->sinopsis }}</td>
+                        <td>{{ $buku->rak }}</td>
                         <td>
                             @if ($buku->status == '1')
                                 <button class="btn btn-outline-success btn-sm mb-2 w-100" disabled>Ada</button>

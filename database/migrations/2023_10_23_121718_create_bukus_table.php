@@ -27,6 +27,7 @@ return new class extends Migration
             $table->text('sinopsis')->nullable();
             $table->string('photo')->nullable();
             $table->string('ket')->nullable();
+            $table->string('rak');
             $table->string('status')->nullable();
             $table->timestamps();
         });

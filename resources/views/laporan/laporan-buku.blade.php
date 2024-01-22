@@ -31,12 +31,12 @@
                         <th>ISBN</th>
                         <th>Pengarang</th>
                         <th>Judul</th>
-                        <th>Eksemplar</th>
-                        <th>Tahun Inventaris</th>
-                        <th>Asal Buku</th>
-                        <th>Jenis Buku</th>
+                        <th>Eks</th>
+                        <th>Thn Inv</th>
+                        <th>Asal</th>
+                        <th>Jenis</th>
                         <th>Bahasa</th>
-                        <th>No Inventaris</th>
+                        <th>No.Inv</th>
                         <th>Tahun Terbit</th>
                         <th>Keterangan</th>
                     </tr>
@@ -48,7 +48,7 @@
                     @foreach ($databuku as $buku)
                         <tr>
                             <td>{{ $no++ }}</td>
-                            <td>{{ $buku->tanggal }}</td>
+                            <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $buku->tanggal)->format('d-m-Y') }}</td>
                             <td>{{ $buku->isbn }}</td>
                             <td>{{ $buku->pengarang }}</td>
                             <td>{{ $buku->judul }}</td>

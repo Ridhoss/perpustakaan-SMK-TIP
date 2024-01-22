@@ -232,7 +232,7 @@
                     </div>
                     <div class="row mb-2">
                         <label class="mb-2 fw-medium ms-2">Anggota Peminjam</label>
-                        <select class="form-select" id="select_box" name="id_anggota">
+                        <select class="form-select" id="select_box" name="id_anggota" required>
                             <option value="">Pilih Anggota</option>
                             @foreach ($datanggota as $anggota)
                                 <option value="{{ $anggota->nisn }}">{{ $anggota->nisn }} - {{ $anggota->name }}

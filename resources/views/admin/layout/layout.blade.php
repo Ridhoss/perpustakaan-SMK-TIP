@@ -119,6 +119,7 @@
                         <a class="collapse-item" href="/kategori" id="kategori">Data Kategori</a>
                         <a class="collapse-item" href="/asal" id="asal">Data Asal Buku</a>
                         <a class="collapse-item" href="/bahasa" id="bahasa">Data Bahasa Buku</a>
+                        <a class="collapse-item" href="/rak" id="rak">Data Rak</a>
                         <a class="collapse-item" href="/anggota" id="anggota">Data Anggota</a>
                     </div>
                 </div>
