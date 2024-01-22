@@ -128,8 +128,8 @@
                         {{-- <td>{!! DNS1D::getBarcodeHTML("$peminjaman->kode",'C39',1,50) !!}</td> --}}
                         <td>{{ $peminjaman->kode }}</td>
                         <td>{{ $peminjaman->anggota }}</td>
-                        <td>{{ $peminjaman->tgl_pinjam }}</td>
-                        <td>{{ $peminjaman->tgl_kembali }}</td>
+                        <td>{{ Carbon\Carbon::createFromFormat('Y-m-d', $peminjaman->tgl_pinjam)->format('d-m-Y') }}</td>
+                        <td>{{ Carbon\Carbon::createFromFormat('Y-m-d', $peminjaman->tgl_kembali)->format('d-m-Y') }}</td>
                         <td>{{ $peminjaman->jumlah }}</td>
                         <td>{{ $peminjaman->petugas }}</td>
                         <td>
