@@ -9,6 +9,9 @@
     {{-- bootstrap --}}
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
 
+    {{-- logo atas --}}
+    <link rel="shortcut icon" type="image/png" href="assets/img/logo/buku.png" />
+
     <style>
 
     </style>

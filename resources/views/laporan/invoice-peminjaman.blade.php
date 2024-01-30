@@ -8,6 +8,9 @@
     {{-- logo atas --}}
     <link rel="shortcut icon" type="image/png" href="assets/img/logo/buku.png" />
 
+    {{-- logo atas --}}
+    <link rel="shortcut icon" type="image/png" href="assets/img/logo/buku.png" />
+
     <style>
         .invoice-box {
             max-width: 800px;
