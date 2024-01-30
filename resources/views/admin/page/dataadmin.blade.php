@@ -163,7 +163,7 @@
                             <td>Perempuan</td>
                         @endif
                         <td>{{ $admin->religion }}</td>
-                        <td>{{ $admin->date }}</td>
+                        <td>{{ Carbon\Carbon::createFromFormat('Y-m-d', $admin->date)->format('d-m-Y') }}</td>
                         <td>{{ $admin->status }}</td>
                         <td><img src="{{ Storage::url('public/admin/' . $admin->photo) }}" width="100"
                                 class="rounded">
@@ -171,8 +171,10 @@
                         <td>
                             <button class="btn btn-success btn-sm mb-2 w-100" data-bs-toggle="modal"
                                 data-bs-target="#edit{{ $admin->id }}">Edit</button>
-                            <button class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal"
-                                data-bs-target="#password{{ $admin->id }}">Edit Password</button>
+                            @if ($admin->id == $user->id || $user->status == 'superadmin')
+                                <button class="btn btn-secondary btn-sm mb-2 w-100" data-bs-toggle="modal"
+                                    data-bs-target="#password{{ $admin->id }}">Edit Password</button>
+                            @endif
                             @if ($admin->status != 'superadmin')
                                 <button class="btn btn-danger btn-sm mb-2 w-100" data-bs-toggle="modal"
                                     data-bs-target="#hapus{{ $admin->id }}">Hapus</button>
@@ -224,7 +226,8 @@
                         </div>
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">Password</label>
-                            <input type="password" class="form-control" placeholder="Password Minimal 3" name="password" required>
+                            <input type="password" class="form-control" placeholder="Password Minimal 3" name="password"
+                                required>
                         </div>
                         <div class="row mb-3">
                             <label class="mb-2 fw-medium">Email</label>
@@ -430,7 +433,7 @@
                         </div>
                         <div class="modal-footer">
                             <a href="" class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="submit" class="btn btn-success">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -471,6 +474,4 @@
 
         };
     </script>
-
-
 @endsection

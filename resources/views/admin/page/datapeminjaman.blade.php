@@ -213,7 +213,7 @@
                             <label class="mb-2">Laporan Berdasarkan Anggota</label>
                             {{-- <input type="text" class="form-control" name="username" id="username" placeholder="Search By Username"> --}}
                             <select name="username" id="" class="form-select">
-                                <option value="">-- Print By User --</option>
+                                <option value="">-- Print Berdasarkan Anggota --</option>
                                 @foreach ($anggotas as $anggota)
                                     <option value="{{ $anggota->name }}">{{ $anggota->name }}</option>
                                 @endforeach

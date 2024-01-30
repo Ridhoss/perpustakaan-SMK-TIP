@@ -162,7 +162,7 @@
                             <td>Perempuan</td>
                         @endif
                         <td>{{ $petugas->religion }}</td>
-                        <td>{{ $petugas->date }}</td>
+                        <td>{{ Carbon\Carbon::createFromFormat('Y-m-d', $petugas->date)->format('d-m-Y') }}</td>
                         <td><img src="{{ Storage::url('public/petugas/' . $petugas->photo) }}" width="100"
                                 class="rounded">
                         </td>
@@ -421,7 +421,7 @@
                         </div>
                         <div class="modal-footer">
                             <a href="" class="btn btn-secondary" data-bs-dismiss="modal">Close</a>
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="submit" class="btn btn-success">Simpan</button>
                         </div>
                     </form>
                 </div>

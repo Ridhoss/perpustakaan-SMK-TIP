@@ -439,11 +439,11 @@
                                     <label class="mb-2 fw-medium">Status</label>
                                     <select name="status" class="form-control">
                                         @if ($buku->status == 1)
-                                            <option value="1">Ada</option>
+                                            <option value="1">Tersedia</option>
                                             <option value="0">Dipinjam</option>
                                         @else
                                             <option value="0">Dipinjam</option>
-                                            <option value="1">Ada</option>
+                                            <option value="1">Tersedia</option>
                                         @endif
                                     </select>
                                 </div>

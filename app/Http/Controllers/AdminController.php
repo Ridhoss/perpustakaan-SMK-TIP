@@ -329,7 +329,7 @@ class AdminController extends Controller
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
                 ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id')
-                ->join('raks','raks.id','=','bukus.rak')
+                ->join('raks', 'raks.id', '=', 'bukus.rak')
                 ->where('judul', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('isbn', 'LIKE', '%' . $request->cari . '%')
                 ->OrWhere('pengarang', 'LIKE', '%' . $request->cari . '%')
@@ -339,7 +339,7 @@ class AdminController extends Controller
                 ->join('asals', 'asals.id', '=', 'bukus.asl_id')
                 ->join('kategoris', 'kategoris.id', '=', 'bukus.ktg_id')
                 ->join('bahasas', 'bahasas.id', '=', 'bukus.bhs_id')
-                ->join('raks','raks.id','=','bukus.rak');
+                ->join('raks', 'raks.id', '=', 'bukus.rak');
         }
 
         $datakat = kategori::all();
@@ -1626,12 +1626,15 @@ class AdminController extends Controller
                 'pinjams.status',
                 'anggotas.name AS anggota',
                 'petugas.name AS petugas',
-                'bukus.judul AS buku'
+                'bukus.judul AS buku',
+                DB::raw('GROUP_CONCAT(detailpinjams.id_buku) AS id_buku_array'),
+                DB::raw('LENGTH(GROUP_CONCAT(detailpinjams.id_buku)) - LENGTH(REPLACE(GROUP_CONCAT(detailpinjams.id_buku), ",", "")) + 1 AS jumlah')
             )
                 ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
                 ->orderBy('pinjams.created_at', 'asc');
 
             $st = pinjam::select('pinjams.tgl_pinjam')
@@ -1659,12 +1662,15 @@ class AdminController extends Controller
                 'pinjams.status',
                 'anggotas.name AS anggota',
                 'petugas.name AS petugas',
-                'bukus.judul AS buku'
+                'bukus.judul AS buku',
+                DB::raw('GROUP_CONCAT(detailpinjams.id_buku) AS id_buku_array'),
+                DB::raw('LENGTH(GROUP_CONCAT(detailpinjams.id_buku)) - LENGTH(REPLACE(GROUP_CONCAT(detailpinjams.id_buku), ",", "")) + 1 AS jumlah')
             )
                 ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->whereBetween('pinjams.tgl_pinjam', [$start, $end]);
         } elseif ($validator->fails()) {
@@ -1681,12 +1687,15 @@ class AdminController extends Controller
                 'pinjams.status',
                 'anggotas.name AS anggota',
                 'petugas.name AS petugas',
-                'bukus.judul AS buku'
+                'bukus.judul AS buku',
+                DB::raw('GROUP_CONCAT(detailpinjams.id_buku) AS id_buku_array'),
+                DB::raw('LENGTH(GROUP_CONCAT(detailpinjams.id_buku)) - LENGTH(REPLACE(GROUP_CONCAT(detailpinjams.id_buku), ",", "")) + 1 AS jumlah')
             )
                 ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->where('anggotas.name', '=', $username);
 
@@ -1721,12 +1730,15 @@ class AdminController extends Controller
                 'pinjams.status',
                 'anggotas.name AS anggota',
                 'petugas.name AS petugas',
-                'bukus.judul AS buku'
+                'bukus.judul AS buku',
+                DB::raw('GROUP_CONCAT(detailpinjams.id_buku) AS id_buku_array'),
+                DB::raw('LENGTH(GROUP_CONCAT(detailpinjams.id_buku)) - LENGTH(REPLACE(GROUP_CONCAT(detailpinjams.id_buku), ",", "")) + 1 AS jumlah')
             )
                 ->join('anggotas', 'anggotas.nisn', '=', 'pinjams.id_anggota')
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->where('anggotas.name', '=', $username)
                 ->whereBetween('pinjams.tgl_pinjam', [$start, $end]);
