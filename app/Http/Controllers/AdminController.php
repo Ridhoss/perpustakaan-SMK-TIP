@@ -72,12 +72,12 @@ class AdminController extends Controller
 
             if ($user) {
                 // Authentication successful, log the entry
-                DB::statement('CALL logEntry(?,?,?,?)', [
-                    $user->id,
-                    $user->username,
-                    'Login Admin',
-                    Carbon::now()
-                ]);
+                // DB::statement('CALL logEntry(?,?,?,?)', [
+                //     $user->id,
+                //     $user->username,
+                //     'Login Admin',
+                //     Carbon::now()
+                // ]);
                 return redirect()->intended('/dashboard');
             }
         } else if (Auth::guard('petugas')->attempt($login)) {
@@ -86,12 +86,12 @@ class AdminController extends Controller
 
             if ($user) {
                 // Authentication successful, log the entry
-                DB::statement('CALL logEntry(?,?,?,?)', [
-                    $user->id,
-                    $user->username,
-                    'Login Petugas',
-                    Carbon::now()
-                ]);
+                // DB::statement('CALL logEntry(?,?,?,?)', [
+                //     $user->id,
+                //     $user->username,
+                //     'Login Petugas',
+                //     Carbon::now()
+                // ]);
                 return redirect()->intended('/petdashboard');
             }
         }
@@ -106,23 +106,23 @@ class AdminController extends Controller
         if (Auth::guard('admin')->check()) {
             $user = Auth::guard('admin')->user();
 
-            DB::statement('CALL logEntry(?,?,?,?)', [
-                $user->id,
-                $user->username,
-                'Logout Admin',
-                Carbon::now()
-            ]);
+            // DB::statement('CALL logEntry(?,?,?,?)', [
+            //     $user->id,
+            //     $user->username,
+            //     'Logout Admin',
+            //     Carbon::now()
+            // ]);
 
             Auth::guard('admin')->logout();
         } elseif (Auth::guard('petugas')->check()) {
             $user = Auth::guard('petugas')->user();
 
-            DB::statement('CALL logEntry(?,?,?,?)', [
-                $user->id,
-                $user->username,
-                'Logout Petugas',
-                Carbon::now()
-            ]);
+            // DB::statement('CALL logEntry(?,?,?,?)', [
+            //     $user->id,
+            //     $user->username,
+            //     'Logout Petugas',
+            //     Carbon::now()
+            // ]);
 
             Auth::guard('petugas')->logout();
         }
