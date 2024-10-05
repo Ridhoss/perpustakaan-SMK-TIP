@@ -72,12 +72,12 @@ class AdminController extends Controller
 
             if ($user) {
                 // Authentication successful, log the entry
-                // DB::statement('CALL logEntry(?,?,?,?)', [
-                //     $user->id,
-                //     $user->username,
-                //     'Login Admin',
-                //     Carbon::now()
-                // ]);
+                DB::statement('CALL logEntry(?,?,?,?)', [
+                    $user->id,
+                    $user->username,
+                    'Login Admin',
+                    Carbon::now()
+                ]);
                 return redirect()->intended('/dashboard');
             }
         } else if (Auth::guard('petugas')->attempt($login)) {
@@ -86,12 +86,12 @@ class AdminController extends Controller
 
             if ($user) {
                 // Authentication successful, log the entry
-                // DB::statement('CALL logEntry(?,?,?,?)', [
-                //     $user->id,
-                //     $user->username,
-                //     'Login Petugas',
-                //     Carbon::now()
-                // ]);
+                DB::statement('CALL logEntry(?,?,?,?)', [
+                    $user->id,
+                    $user->username,
+                    'Login Petugas',
+                    Carbon::now()
+                ]);
                 return redirect()->intended('/petdashboard');
             }
         }
@@ -106,23 +106,23 @@ class AdminController extends Controller
         if (Auth::guard('admin')->check()) {
             $user = Auth::guard('admin')->user();
 
-            // DB::statement('CALL logEntry(?,?,?,?)', [
-            //     $user->id,
-            //     $user->username,
-            //     'Logout Admin',
-            //     Carbon::now()
-            // ]);
+            DB::statement('CALL logEntry(?,?,?,?)', [
+                $user->id,
+                $user->username,
+                'Logout Admin',
+                Carbon::now()
+            ]);
 
             Auth::guard('admin')->logout();
         } elseif (Auth::guard('petugas')->check()) {
             $user = Auth::guard('petugas')->user();
 
-            // DB::statement('CALL logEntry(?,?,?,?)', [
-            //     $user->id,
-            //     $user->username,
-            //     'Logout Petugas',
-            //     Carbon::now()
-            // ]);
+            DB::statement('CALL logEntry(?,?,?,?)', [
+                $user->id,
+                $user->username,
+                'Logout Petugas',
+                Carbon::now()
+            ]);
 
             Auth::guard('petugas')->logout();
         }
@@ -206,6 +206,11 @@ class AdminController extends Controller
             ->orderBy('log_time', 'desc')
             ->take(5);
 
+        $entryhistory = DB::table('entrylog')
+            ->select('*')
+            ->orderBy('log_time', 'desc')
+            ->take(5);
+
 
         return view('admin.page.dashboard', [
             'chart' => $chart->build(),
@@ -216,6 +221,7 @@ class AdminController extends Controller
             'jumlahadmin' => Admin::count(),
             'datalaris' => $bukularis->get(),
             'datalog' => $history->get(),
+            'entrylog' => $entryhistory->get(),
             'anggotafav' => $anggotafav->get()
         ]);
     }
@@ -1634,7 +1640,7 @@ class AdminController extends Controller
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
-                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas', 'judul')
                 ->orderBy('pinjams.created_at', 'asc');
 
             $st = pinjam::select('pinjams.tgl_pinjam')
@@ -1670,7 +1676,7 @@ class AdminController extends Controller
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
-                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas', 'judul')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->whereBetween('pinjams.tgl_pinjam', [$start, $end]);
         } elseif ($validator->fails()) {
@@ -1695,7 +1701,7 @@ class AdminController extends Controller
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
-                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas', 'judul')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->where('anggotas.name', '=', $username);
 
@@ -1738,7 +1744,7 @@ class AdminController extends Controller
                 ->join('petugas', 'petugas.id', '=', 'pinjams.id_petugas')
                 ->leftJoin('detailpinjams', 'detailpinjams.kode', '=', 'pinjams.kode')
                 ->join('bukus', 'bukus.id', '=', 'detailpinjams.id_buku')
-                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas','judul')
+                ->groupBy('pinjams.kode', 'pinjams.id_anggota', 'pinjams.guru', 'pinjams.tgl_pinjam', 'pinjams.tgl_kembali', 'pinjams.id_petugas', 'pinjams.status', 'anggota', 'petugas', 'judul')
                 ->orderBy('pinjams.created_at', 'asc')
                 ->where('anggotas.name', '=', $username)
                 ->whereBetween('pinjams.tgl_pinjam', [$start, $end]);

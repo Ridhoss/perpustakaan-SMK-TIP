@@ -143,7 +143,7 @@
         <div class="row">
 
             {{-- grafik chart --}}
-            <div class="col-xl-8 col-lg-7">
+            {{-- <div class="col-xl-8 col-lg-7">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold">Log Peminjaman</h6>
@@ -172,6 +172,41 @@
                                         <td>{{ $log->tabel }}</td>
                                         <td>{{ $log->status }}</td>
                                         <td>{{ $log->log_time }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> --}}
+
+            <div class="col-xl-8 col-lg-7">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold">Informasi Login & Logout</h6>
+
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <table class="table text-center table-striped">
+                            <thead>
+                                <tr class="table-danger">
+                                    <th>No</th>
+                                    <th>Username</th>
+                                    <th>Status</th>
+                                    <th>Log Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $no = 1;
+                                @endphp
+                                @foreach ($entrylog as $entry)
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ $entry->username }}</td>
+                                        <td>{{ $entry->status }}</td>
+                                        <td>{{ $entry->log_time }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

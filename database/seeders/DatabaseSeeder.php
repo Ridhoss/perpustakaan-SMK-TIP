@@ -12,6 +12,7 @@ use App\Models\penerbit;
 use App\Models\pengarang;
 use App\Models\rak;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -97,5 +98,15 @@ class DatabaseSeeder extends Seeder
         bahasa::insert($databahasa);
 
         rak::insert($datarak);
+
+        DB::unprepared('DROP PROCEDURE IF EXISTS logEntry');
+
+        DB::unprepared('
+        CREATE PROCEDURE logEntry(IN userId INT, IN username VARCHAR(255), IN action VARCHAR(255), IN logTime DATETIME)
+        BEGIN
+            INSERT INTO entrylog (id, username, status, log_time)
+            VALUES (userId, username, action, logTime);
+        END
+        ');
     }
 }
